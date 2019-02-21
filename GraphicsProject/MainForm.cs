@@ -11,8 +11,8 @@ using System.Windows.Forms;
 
 /*
  * Var 37. 
- * Figures: Bezier, parallelogram, angle 2
- * Also straight line
+ * Figures: Bezier +, parallelogram, angle 2
+ * Straight line +
  * Transformations: rotate on custom angle, rotate 30 degrees, scale on center of figure
  * Also move
  * Operations: AND, SUBTRACT
@@ -146,8 +146,8 @@ namespace GraphicsProject
 
         private void RedrawButton_Click(object sender, EventArgs e)
         {
-            FullUpdateCanvas();
             g.Clear(Color.White);
+            FullUpdateCanvas();
         }
     }
 }
