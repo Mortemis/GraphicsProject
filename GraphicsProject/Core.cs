@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace GraphicsProject
 {
-    static class Program
+    static class Core
     {
         /// <summary>
         /// Главная точка входа для приложения.
@@ -16,7 +16,7 @@ namespace GraphicsProject
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainForm());
         }
     }
 }
