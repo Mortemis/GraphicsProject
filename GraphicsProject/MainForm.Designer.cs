@@ -38,6 +38,8 @@
             this.CanvasBox = new System.Windows.Forms.PictureBox();
             this.LineButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.BezierButton = new System.Windows.Forms.Button();
+            this.RedrawButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.SuspendLayout();
@@ -97,6 +99,7 @@
             // 
             // CanvasBox
             // 
+            this.CanvasBox.BackColor = System.Drawing.Color.White;
             this.CanvasBox.Location = new System.Drawing.Point(102, 27);
             this.CanvasBox.Name = "CanvasBox";
             this.CanvasBox.Size = new System.Drawing.Size(686, 411);
@@ -124,11 +127,33 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Drag and drop \r\nto draw";
             // 
+            // BezierButton
+            // 
+            this.BezierButton.Location = new System.Drawing.Point(12, 56);
+            this.BezierButton.Name = "BezierButton";
+            this.BezierButton.Size = new System.Drawing.Size(84, 23);
+            this.BezierButton.TabIndex = 4;
+            this.BezierButton.Text = "Bezier";
+            this.BezierButton.UseVisualStyleBackColor = true;
+            this.BezierButton.Click += new System.EventHandler(this.BezierButton_Click);
+            // 
+            // RedrawButton
+            // 
+            this.RedrawButton.Location = new System.Drawing.Point(12, 367);
+            this.RedrawButton.Name = "RedrawButton";
+            this.RedrawButton.Size = new System.Drawing.Size(84, 23);
+            this.RedrawButton.TabIndex = 5;
+            this.RedrawButton.Text = "DebugRedraw";
+            this.RedrawButton.UseVisualStyleBackColor = true;
+            this.RedrawButton.Click += new System.EventHandler(this.RedrawButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.RedrawButton);
+            this.Controls.Add(this.BezierButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LineButton);
             this.Controls.Add(this.CanvasBox);
@@ -156,6 +181,8 @@
         private System.Windows.Forms.PictureBox CanvasBox;
         private System.Windows.Forms.Button LineButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button BezierButton;
+        private System.Windows.Forms.Button RedrawButton;
     }
 }
 

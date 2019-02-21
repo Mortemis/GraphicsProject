@@ -19,7 +19,7 @@ using System.Windows.Forms;
  */
 
 
-    
+
 
 
 
@@ -47,6 +47,8 @@ namespace GraphicsProject
         private State CurrentState;
 
         private Point FirstPoint;
+        Bezier ActiveBezier;
+
         // TODO layers
         // Идея слоистости - есть лист абстрактного класса Figure, в котором есть метод Draw. 
         // Добавляем в него фигурки, наследующие его, и при любом апдейте просто вызываем метод Draw для всего листа.
@@ -54,33 +56,51 @@ namespace GraphicsProject
         // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
         List<Figure> Layers = new List<Figure>();
 
+
         public MainForm()
         {
             InitializeComponent();
+            Bezier.InitFactorials(); //Init an array with i! 
             width = CanvasBox.Width;
             height = CanvasBox.Height;
             CurrentState = State.WAIT;
-            g = CanvasBox.CreateGraphics();           
+            g = CanvasBox.CreateGraphics();
         }
 
-        private void UpdateCanvas()
+        // Update from index to end. Fix.
+        private void UpdateCanvas(int index)
         {
-            foreach(Figure figure in Layers)
+            for (int i = index; i < Layers.Count; i++)
+            {
+                Layers[i].Draw();
+            }
+        }
+
+        private void FullUpdateCanvas()
+        {
+            foreach (Figure figure in Layers)
             {
                 figure.Draw();
             }
         }
-        
 
         private void LineButton_Click(object sender, EventArgs e)
         {
             CurrentState = State.DRAW_LINE;
         }
 
+        private void BezierButton_Click(object sender, EventArgs e)
+        {
+            CurrentState = State.DRAW_BEZIER;
+            ActiveBezier = new Bezier();
+        }
+
+
         // Maybe replace with mouse click...
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
-            switch (CurrentState) {
+            switch (CurrentState)
+            {
                 case State.WAIT:
                     {
                         //TODO Select
@@ -93,7 +113,19 @@ namespace GraphicsProject
                     }
                 case State.DRAW_LINE:
                     {
-                        FirstPoint = new Point(e.X, e.Y);
+                        FirstPoint = e.Location;
+                        break;
+                    }
+                case State.DRAW_BEZIER:
+                    {
+                        ActiveBezier.AddPoint(e.Location);
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            ActiveBezier.Finish();
+                            Layers.Add(ActiveBezier);
+                            ActiveBezier = new Bezier();
+                            UpdateCanvas(Layers.Count - 1);
+                        }
                         break;
                     }
             }
@@ -106,11 +138,16 @@ namespace GraphicsProject
                 case State.DRAW_LINE:
                     {
                         Layers.Add(new Line(FirstPoint, e.Location));
-                        UpdateCanvas();
+                        UpdateCanvas(Layers.Count - 1);
                         break;
                     }
             }
         }
 
+        private void RedrawButton_Click(object sender, EventArgs e)
+        {
+            FullUpdateCanvas();
+            g.Clear(Color.White);
+        }
     }
 }
