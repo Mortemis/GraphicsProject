@@ -45,7 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphics.cs" />
+    <Compile Include="Figures\Bezier.cs" />
+    <Compile Include="Figures\Figure.cs" />
+    <Compile Include="Figures\Line.cs" />
+    <Compile Include="Figures\Polygon.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

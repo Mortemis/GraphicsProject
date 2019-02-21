@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphicsProject
 {
-    class Graphics
+    class Bezier
     {
-
     }
 }
