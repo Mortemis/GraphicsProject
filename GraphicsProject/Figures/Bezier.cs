@@ -1,49 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
     public class Bezier : Figure
     {
-        // Максимальное количество точек для кривой Безье.
-        private const int Np = 20; 
-
-        private readonly List<Point> _lp;
-
-        // Кривая дорисована.
-        private bool _isFinished;
+        const int np = 20; // Максимальное количество точек для кривой Безье.
+        //Point[] Lp = new Point[np]; // TODO Remove
+        public List<Point> Lp = new List<Point>();
+        public bool finished = false; // Кривая дорисована.
 
         public Bezier()
         {
-            _lp = new List<Point>();
-            _isFinished = false;
-        }      
+            Lp = new List<Point>();
+            finished = false;
+        }
+
+        private static double[] Factorials = new double[50]; //Массив, который инициализируется факториалами для ускорения работы программы.
+
+        public static void InitFactorials()
+        {
+            for (int i = 0; i < Factorials.Length; i++)
+            {
+                Factorials[i] = Factorial(i);
+            }
+        }
+
+        private static double Factorial(int numb)
+        {
+            double res = 1;
+            for (int i = numb; i > 1; i--) res *= i;
+            return res;
+        }
 
         public void Finish()
         {
-            _isFinished = true;
+            finished = true;
         }
 
         public void AddPoint(Point point)
         {
-            _lp.Add(point);
+            Lp.Add(point);
         }
 
         public override void Draw()
         {
-            if (_isFinished)
+            if (finished)
             {
-                int n = _lp.Count - 1;
-                double nFact = FactorialUtils.Factorials[n];
+                int n = Lp.Count - 1;
+                double nFact = Factorials[n];
 
                 //Шаг
                 double dt = 0.001;
                 double t = dt;
 
-                double xPred = _lp[0].X;
-                double yPred = _lp[0].Y;
+                double xPred = Lp[0].X;
+                double yPred = Lp[0].Y;
 
 
                 while (t < 1 + dt / 2)
@@ -53,18 +66,19 @@ namespace GraphicsProject.Figures
                     while (i <= n) // Было <=
                     {
                         //Интерполяционный полином Бернштейна
-                        double j = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (FactorialUtils.Factorials[i] * FactorialUtils.Factorials[n - i]);
-                        xt = xt + _lp[i].X * j;
-                        yt = yt + _lp[i].Y * j;
+                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Factorials[i] * Factorials[n - i]);
+                        xt = xt + Lp[i].X * J;
+                        yt = yt + Lp[i].Y * J;
                         i++;
                     }
 
-                    Point begin = new Point((int)xPred, (int)yPred);
-                    Point end = new Point((int)xt, (int)yt);
-                    Line.Draw(begin, end);
+                    Point Begin = new Point((int)xPred, (int)yPred);
+                    Point End = new Point((int)xt, (int)yt);
+                    Line.Draw(Begin, End);
                     t += dt;
                     xPred = xt; yPred = yt;
-                }                
+                }
+                nFact = Factorials[n];
             }
         }
     }

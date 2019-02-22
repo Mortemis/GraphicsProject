@@ -6,11 +6,9 @@ namespace GraphicsProject.Figures
     {
         public abstract void Draw();
 
-        protected static Pen DrawPen = MainForm.DrawPen;
-
-        public static void PutPoint(Point position)
+        public static void PutPoint(Point Position)
         {
-            MainForm.G.DrawRectangle(DrawPen, position.X, position.Y, 1, 1);
+            MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
         }
     }
 
