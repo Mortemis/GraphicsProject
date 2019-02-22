@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GraphicsProject
+namespace GraphicsProject.Figures
 {
     public class Bezier : Figure
     {
