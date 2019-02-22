@@ -30,56 +30,62 @@ namespace GraphicsProject
     // State of UI
     enum State : int
     {
-        WAIT, SELECTED, DRAW_LINE, DRAW_BEZIER, DRAW_PARA, DRAW_ANGLE, SCALE
+        Wait, Selected, DrawLine, DrawBezier, DrawPara, DrawAngle, Scale
     }
 
     public partial class MainForm : Form
     {
-        //Не очень хочу передавать это как параметр в метод PutPoint класса Figure через каждый метод Draw, поэтому делаю статическим.
-        //Надеюсь, это не страшно, но если вдруг страшно, то 
-        //TODO Исправь, если страшно или убери этот кусок комментов, если не очень страшно.
-        public static Graphics g;
+        public static Graphics G { get; set; }
 
         //TODO Width and height change on window resize.
         //HACK Fix me please, i am a mistake.
-        public static int width;
-        public static int height;
+        public static int Width;
+        public static int Height;
         public static Pen DrawPen = new Pen(Color.Black, 1);
-        private State CurrentState;
+        private State _currentState;
 
-        private Point FirstPoint;
-        Bezier ActiveBezier;
+        private Point _firstPoint;
+        Bezier _activeBezier;
 
         // TODO layers
         // Идея слоистости - есть лист абстрактного класса Figure, в котором есть метод Draw. 
         // Добавляем в него фигурки, наследующие его, и при любом апдейте просто вызываем метод Draw для всего листа.
         // Может быть, стоит повесить в юи список, чтобы выбирать фигуры можно было и через этот список. 
         // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
-        List<Figure> Layers = new List<Figure>();
+        List<Figure> _layers = new List<Figure>();
+
+
+
+        #region Line
+
+        private List<Point> _points;
+
+        #endregion
 
 
         public MainForm()
         {
             InitializeComponent();
-            Bezier.InitFactorials(); //Init an array with i! 
-            width = CanvasBox.Width;
-            height = CanvasBox.Height;
-            CurrentState = State.WAIT;
-            g = CanvasBox.CreateGraphics();
+            Width = CanvasBox.Width;
+            Height = CanvasBox.Height;
+            _currentState = State.Wait;
+            G = CanvasBox.CreateGraphics();
+
+            _points = new List<Point>();
         }
 
         // Update from index to end. Fix.
         private void UpdateCanvas(int index)
         {
-            for (int i = index; i < Layers.Count; i++)
+            for (int i = index; i < _layers.Count; i++)
             {
-                Layers[i].Draw();
+                _layers[i].Draw();
             }
         }
 
         private void FullUpdateCanvas()
         {
-            foreach (Figure figure in Layers)
+            foreach (Figure figure in _layers)
             {
                 figure.Draw();
             }
@@ -87,67 +93,79 @@ namespace GraphicsProject
 
         private void LineButton_Click(object sender, EventArgs e)
         {
-            CurrentState = State.DRAW_LINE;
+            _currentState = State.DrawLine;
         }
 
         private void BezierButton_Click(object sender, EventArgs e)
         {
-            CurrentState = State.DRAW_BEZIER;
-            ActiveBezier = new Bezier();
+            _currentState = State.DrawBezier;
+            _activeBezier = new Bezier();
         }
 
+        private void AddPoint(Point point)
+        {
+            _points.Add(point);
+            Figure.PutPoint(point);
+        }
 
         // Maybe replace with mouse click...
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
-            switch (CurrentState)
+            var location = e.Location;
+            switch (_currentState)
             {
-                case State.WAIT:
+
+                case State.DrawLine:
+                    AddPoint(location);
+                    if (_points.Count == 2)
                     {
-                        //TODO Select
-                        break;
+                        _layers.Add(new Line(_points[0],_points[1]));
+                        _points.Clear();
                     }
-                case State.SELECTED:
+                    break;
+
+                case State.Wait:
+
+                    //TODO Select
+                    break;
+
+                case State.Selected:
+
+                    //TODO Enable scale and rotate buttons
+                    break;
+
+               
+                case State.DrawBezier:
+
+                    _activeBezier.AddPoint(e.Location);
+                    if (e.Button == MouseButtons.Right)
                     {
-                        //TODO Enable scale and rotate buttons
-                        break;
+                        _activeBezier.Finish();
+                        _layers.Add(_activeBezier);
+                        _activeBezier = new Bezier();
+                        UpdateCanvas(_layers.Count - 1);
                     }
-                case State.DRAW_LINE:
-                    {
-                        FirstPoint = e.Location;
-                        break;
-                    }
-                case State.DRAW_BEZIER:
-                    {
-                        ActiveBezier.AddPoint(e.Location);
-                        if (e.Button == MouseButtons.Right)
-                        {
-                            ActiveBezier.Finish();
-                            Layers.Add(ActiveBezier);
-                            ActiveBezier = new Bezier();
-                            UpdateCanvas(Layers.Count - 1);
-                        }
-                        break;
-                    }
+                    break;
+
             }
         }
 
         private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
         {
-            switch (CurrentState)
-            {
-                case State.DRAW_LINE:
-                    {
-                        Layers.Add(new Line(FirstPoint, e.Location));
-                        UpdateCanvas(Layers.Count - 1);
-                        break;
-                    }
-            }
+            //switch (_currentState)
+            //{
+            //    case State.DrawLine:
+            //        {
+            //            _layers.Add(new Line(_firstPoint, e.Location));
+            //            UpdateCanvas(_layers.Count - 1);
+            //            break;
+            //        }
+            //}
         }
 
         private void RedrawButton_Click(object sender, EventArgs e)
         {
-            g.Clear(Color.White);
+            G.Clear(Color.White);
             FullUpdateCanvas();
         }
     }
