@@ -5,42 +5,42 @@ namespace GraphicsProject.Figures
 {
     public class Line : Figure
     {
-        private Point Begin;
-        private Point End;
+        private Point _begin;
+        private Point _end;
 
-        public Line(Point Begin, Point End)
+        public Line(Point begin, Point end)
         {
-            this.Begin = Begin;
-            this.End = End;
+            this._begin = begin;
+            this._end = end;
         }
         
-        public static void Draw(Point Begin, Point End)
+        public static void Draw(Point begin, Point end)
         {
-            Pen DrPen = MainForm.DrawPen;
-            int x1 = Begin.X; int y1 = Begin.Y; int x2 = End.X; int y2 = End.Y;
-            int x, y, dx, dy, Sx = 0, Sy = 0;
-            int F = 0, Fx = 0, dFx = 0, Fy = 0, dFy = 0;
+            Pen drPen = MainForm.DrawPen;
+            int x1 = begin.X; int y1 = begin.Y; int x2 = end.X; int y2 = end.Y;
+            int x, y, dx, dy, sx = 0, sy = 0;
+            int f = 0, fx = 0, dFx = 0, fy = 0, dFy = 0;
             dx = x2 - x1;
             dy = y2 - y1;
-            Sx = Math.Sign(dx);
-            Sy = Math.Sign(dy);
-            if (Sx > 0) dFx = dy;
+            sx = Math.Sign(dx);
+            sy = Math.Sign(dy);
+            if (sx > 0) dFx = dy;
             else dFx = -dy;
-            if (Sy > 0) dFy = dx;
+            if (sy > 0) dFy = dx;
             else dFy = -dx;
             x = x1; y = y1;
-            F = 0;
+            f = 0;
             if (Math.Abs(dx) >= Math.Abs(dy)) // угол наклона <= 45 градусов
             {
                 do
                 { //Вывести пиксель с координатами х, у
                     PutPoint(new Point(x, y));
                     if (x == x2) break;
-                    Fx = F + dFx;
-                    F = Fx - dFy;
-                    x = x + Sx;
-                    if (Math.Abs(Fx) < Math.Abs(F)) F = Fx;
-                    else y = y + Sy;
+                    fx = f + dFx;
+                    f = fx - dFy;
+                    x = x + sx;
+                    if (Math.Abs(fx) < Math.Abs(f)) f = fx;
+                    else y = y + sy;
                 } while (true);
             }
             else // угол наклона > 45 градусов
@@ -49,11 +49,11 @@ namespace GraphicsProject.Figures
                 { //Вывести пиксель с координатами х, у
                     PutPoint(new Point(x, y));
                     if (y == y2) break;
-                    Fy = F + dFy;
-                    F = Fy - dFx;
-                    y = y + Sy;
-                    if (Math.Abs(Fy) < Math.Abs(F)) F = Fy;
-                    else x = x + Sx;
+                    fy = f + dFy;
+                    f = fy - dFx;
+                    y = y + sy;
+                    if (Math.Abs(fy) < Math.Abs(f)) f = fy;
+                    else x = x + sx;
                 } while (true);
             }
         }
@@ -61,31 +61,31 @@ namespace GraphicsProject.Figures
         public override void Draw()
         
             {
-                Pen DrPen = MainForm.DrawPen;
-                int x1 = Begin.X; int y1 = Begin.Y; int x2 = End.X; int y2 = End.Y;
-                int x, y, dx, dy, Sx = 0, Sy = 0;
-                int F = 0, Fx = 0, dFx = 0, Fy = 0, dFy = 0;
+                Pen drPen = MainForm.DrawPen;
+                int x1 = _begin.X; int y1 = _begin.Y; int x2 = _end.X; int y2 = _end.Y;
+                int x, y, dx, dy, sx = 0, sy = 0;
+                int f = 0, fx = 0, dFx = 0, fy = 0, dFy = 0;
                 dx = x2 - x1;
                 dy = y2 - y1;
-                Sx = Math.Sign(dx);
-                Sy = Math.Sign(dy);
-                if (Sx > 0) dFx = dy;
+                sx = Math.Sign(dx);
+                sy = Math.Sign(dy);
+                if (sx > 0) dFx = dy;
                 else dFx = -dy;
-                if (Sy > 0) dFy = dx;
+                if (sy > 0) dFy = dx;
                 else dFy = -dx;
                 x = x1; y = y1;
-                F = 0;
+                f = 0;
                 if (Math.Abs(dx) >= Math.Abs(dy)) // угол наклона <= 45 градусов
                 {
                     do
                     { //Вывести пиксель с координатами х, у
                         PutPoint(new Point(x, y));
                         if (x == x2) break;
-                        Fx = F + dFx;
-                        F = Fx - dFy;
-                        x = x + Sx;
-                        if (Math.Abs(Fx) < Math.Abs(F)) F = Fx;
-                        else y = y + Sy;
+                        fx = f + dFx;
+                        f = fx - dFy;
+                        x = x + sx;
+                        if (Math.Abs(fx) < Math.Abs(f)) f = fx;
+                        else y = y + sy;
                     } while (true);
                 }
                 else // угол наклона > 45 градусов
@@ -94,11 +94,11 @@ namespace GraphicsProject.Figures
                     { //Вывести пиксель с координатами х, у
                     PutPoint(new Point(x, y));
                     if (y == y2) break;
-                        Fy = F + dFy;
-                        F = Fy - dFx;
-                        y = y + Sy;
-                        if (Math.Abs(Fy) < Math.Abs(F)) F = Fy;
-                        else x = x + Sx;
+                        fy = f + dFy;
+                        f = fy - dFx;
+                        y = y + sy;
+                        if (Math.Abs(fy) < Math.Abs(f)) f = fy;
+                        else x = x + sx;
                     } while (true);
                 }
             

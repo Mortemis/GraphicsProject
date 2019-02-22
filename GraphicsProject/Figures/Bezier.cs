@@ -7,22 +7,22 @@ namespace GraphicsProject.Figures
 {
     public class Bezier : Figure
     {
-        const int np = 20; // Максимальное количество точек для кривой Безье.
+        const int Np = 20; // Максимальное количество точек для кривой Безье.
         //Point[] Lp = new Point[np]; // TODO Remove
         public List<Point> Lp = new List<Point>();
-        public bool finished = false; // Кривая дорисована.
+        public bool Finished = false; // Кривая дорисована.
 
         public Bezier()
         {
             Lp = new List<Point>();
-            finished = false;
+            Finished = false;
         }
 
 
 
         public void Finish()
         {
-            finished = true;
+            Finished = true;
         }
 
         public void AddPoint(Point point)
@@ -32,7 +32,7 @@ namespace GraphicsProject.Figures
 
         public override void Draw()
         {
-            if (finished)
+            if (Finished)
             {
                 int n = Lp.Count - 1;
                 double nFact = FactorialUtils.Factorials[n];
@@ -52,15 +52,15 @@ namespace GraphicsProject.Figures
                     while (i <= n) // Было <=
                     {
                         //Интерполяционный полином Бернштейна
-                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (FactorialUtils.Factorials[i] * FactorialUtils.Factorials[n - i]);
-                        xt = xt + Lp[i].X * J;
-                        yt = yt + Lp[i].Y * J;
+                        double j = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (FactorialUtils.Factorials[i] * FactorialUtils.Factorials[n - i]);
+                        xt = xt + Lp[i].X * j;
+                        yt = yt + Lp[i].Y * j;
                         i++;
                     }
 
-                    Point Begin = new Point((int)xPred, (int)yPred);
-                    Point End = new Point((int)xt, (int)yt);
-                    Line.Draw(Begin, End);
+                    Point begin = new Point((int)xPred, (int)yPred);
+                    Point end = new Point((int)xt, (int)yt);
+                    Line.Draw(begin, end);
                     t += dt;
                     xPred = xt; yPred = yt;
                 }
