@@ -61,7 +61,6 @@ namespace GraphicsProject
         public MainForm()
         {
             InitializeComponent();
-            Bezier.InitFactorials(); //Init an array with i! 
             width = CanvasBox.Width;
             height = CanvasBox.Height;
             CurrentState = State.WAIT;

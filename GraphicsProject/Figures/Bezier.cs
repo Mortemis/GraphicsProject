@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -17,22 +18,7 @@ namespace GraphicsProject.Figures
             finished = false;
         }
 
-        private static double[] Factorials = new double[50]; //Массив, который инициализируется факториалами для ускорения работы программы.
 
-        public static void InitFactorials()
-        {
-            for (int i = 0; i < Factorials.Length; i++)
-            {
-                Factorials[i] = Factorial(i);
-            }
-        }
-
-        private static double Factorial(int numb)
-        {
-            double res = 1;
-            for (int i = numb; i > 1; i--) res *= i;
-            return res;
-        }
 
         public void Finish()
         {
@@ -49,7 +35,7 @@ namespace GraphicsProject.Figures
             if (finished)
             {
                 int n = Lp.Count - 1;
-                double nFact = Factorials[n];
+                double nFact = FactorialUtils.Factorials[n];
 
                 //Шаг
                 double dt = 0.001;
@@ -66,7 +52,7 @@ namespace GraphicsProject.Figures
                     while (i <= n) // Было <=
                     {
                         //Интерполяционный полином Бернштейна
-                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Factorials[i] * Factorials[n - i]);
+                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (FactorialUtils.Factorials[i] * FactorialUtils.Factorials[n - i]);
                         xt = xt + Lp[i].X * J;
                         yt = yt + Lp[i].Y * J;
                         i++;
@@ -78,7 +64,6 @@ namespace GraphicsProject.Figures
                     t += dt;
                     xPred = xt; yPred = yt;
                 }
-                nFact = Factorials[n];
             }
         }
     }
