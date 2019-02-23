@@ -54,7 +54,7 @@ namespace GraphicsProject
         // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
         List<Figure> Layers = new List<Figure>();
         int SelectedLayer = -1; //-1 - no select
-
+        bool CodeSelect = false; // Protects from infinite cycle when selectedchange... event calls FullUpdate.
         public MainForm()
         {
             InitializeComponent();
@@ -84,6 +84,8 @@ namespace GraphicsProject
 
                 LayersList.Items.Add(figure.ToString());
             }
+            CodeSelect = true;
+            LayersList.SelectedIndex = SelectedLayer;
         }
 
         private void ManageStatus()
@@ -104,7 +106,7 @@ namespace GraphicsProject
                 LayersList.ClearSelected();
             }
 
-            if (NewState == State.SELECTED)
+            if (NewState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
                 RotateButton.Enabled = true;
                 ScaleButton.Enabled = true;
@@ -149,13 +151,19 @@ namespace GraphicsProject
 
         private void RemoveButton_Click(object sender, EventArgs e)
         {
-            try
+            if (CurrentState == State.SELECTED && LayersList.SelectedIndex != -1 )
             {
-                Layers.RemoveAt(LayersList.SelectedIndex);
-                FullUpdateCanvas();
-                ChangeState(State.WAIT);
+                try
+                {
+                    Layers.RemoveAt(LayersList.SelectedIndex);
+                    FullUpdateCanvas();
+                    ChangeState(State.WAIT);
+                }
+                catch (IndexOutOfRangeException) { }
+            } else
+            {
+                RemoveButton.Enabled = false;
             }
-            catch (IndexOutOfRangeException) { }
         }
 
         private void RedrawButton_Click(object sender, EventArgs e)
@@ -251,13 +259,18 @@ namespace GraphicsProject
 
         private void LayersList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SelectedLayer = LayersList.SelectedIndex;
-            ChangeState(State.SELECTED);
-            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            if (!CodeSelect)
             {
-                FullUpdateCanvas();
-                Layers[SelectedLayer].DrawSelect();
+                SelectedLayer = LayersList.SelectedIndex;
+                ChangeState(State.SELECTED);
+                if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+                {
+                    FullUpdateCanvas();
+                    Layers[SelectedLayer].DrawSelect();
+                    CodeSelect = false;
+                }
             }
+            ChangeState(State.SELECTED);
             //DrawRectangle on selected Layer.
         }
 
