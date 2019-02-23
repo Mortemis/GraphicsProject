@@ -28,13 +28,10 @@ namespace GraphicsProject.Figures
             Points.Add(Point4);
             Points.Add(Point1);
         }
-        /*
-        public override void Draw()
+
+        public override string ToString()
         {
-            for (int i = 0; i < 4; i++)
-            {
-                Line.Draw(Points[i], Points[i + 1]);
-            }
-        }*/
+            return "Para";
+        }
     }
 }

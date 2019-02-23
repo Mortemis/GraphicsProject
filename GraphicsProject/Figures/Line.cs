@@ -103,7 +103,11 @@ namespace GraphicsProject.Figures
                     else x = x + Sx;
                 } while (true);
             }
-            DrawSelect();
+        }
+
+        public override string ToString()
+        {
+            return "Line";
         }
     }
 }

@@ -66,5 +66,11 @@ namespace GraphicsProject.Figures
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return "Bezier";
+        }
+
     }
 }

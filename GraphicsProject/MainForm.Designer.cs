@@ -42,8 +42,15 @@
             this.RedrawButton = new System.Windows.Forms.Button();
             this.ParaButton = new System.Windows.Forms.Button();
             this.AngleButton = new System.Windows.Forms.Button();
+            this.LayersList = new System.Windows.Forms.ListBox();
+            this.RotateButton = new System.Windows.Forms.Button();
+            this.ScaleButton = new System.Windows.Forms.Button();
+            this.RemoveButton = new System.Windows.Forms.Button();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -98,15 +105,18 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
             // CanvasBox
             // 
+            this.CanvasBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.CanvasBox.BackColor = System.Drawing.Color.White;
             this.CanvasBox.Location = new System.Drawing.Point(102, 27);
             this.CanvasBox.Name = "CanvasBox";
-            this.CanvasBox.Size = new System.Drawing.Size(686, 411);
+            this.CanvasBox.Size = new System.Drawing.Size(596, 392);
             this.CanvasBox.TabIndex = 1;
             this.CanvasBox.TabStop = false;
             this.CanvasBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseDown);
@@ -124,6 +134,7 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 403);
             this.label1.Name = "label1";
@@ -143,6 +154,7 @@
             // 
             // RedrawButton
             // 
+            this.RedrawButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RedrawButton.Location = new System.Drawing.Point(12, 367);
             this.RedrawButton.Name = "RedrawButton";
             this.RedrawButton.Size = new System.Drawing.Size(84, 23);
@@ -171,11 +183,78 @@
             this.AngleButton.UseVisualStyleBackColor = true;
             this.AngleButton.Click += new System.EventHandler(this.AngleButton_Click);
             // 
+            // LayersList
+            // 
+            this.LayersList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LayersList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LayersList.FormattingEnabled = true;
+            this.LayersList.IntegralHeight = false;
+            this.LayersList.Location = new System.Drawing.Point(704, 27);
+            this.LayersList.Name = "LayersList";
+            this.LayersList.Size = new System.Drawing.Size(84, 305);
+            this.LayersList.TabIndex = 8;
+            this.LayersList.SelectedIndexChanged += new System.EventHandler(this.LayersList_SelectedIndexChanged);
+            // 
+            // RotateButton
+            // 
+            this.RotateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RotateButton.Enabled = false;
+            this.RotateButton.Location = new System.Drawing.Point(704, 338);
+            this.RotateButton.Name = "RotateButton";
+            this.RotateButton.Size = new System.Drawing.Size(84, 23);
+            this.RotateButton.TabIndex = 9;
+            this.RotateButton.Text = "Rotate";
+            this.RotateButton.UseVisualStyleBackColor = true;
+            // 
+            // ScaleButton
+            // 
+            this.ScaleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ScaleButton.Enabled = false;
+            this.ScaleButton.Location = new System.Drawing.Point(704, 367);
+            this.ScaleButton.Name = "ScaleButton";
+            this.ScaleButton.Size = new System.Drawing.Size(84, 23);
+            this.ScaleButton.TabIndex = 10;
+            this.ScaleButton.Text = "Scale";
+            this.ScaleButton.UseVisualStyleBackColor = true;
+            // 
+            // RemoveButton
+            // 
+            this.RemoveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RemoveButton.Enabled = false;
+            this.RemoveButton.Location = new System.Drawing.Point(704, 396);
+            this.RemoveButton.Name = "RemoveButton";
+            this.RemoveButton.Size = new System.Drawing.Size(84, 23);
+            this.RemoveButton.TabIndex = 11;
+            this.RemoveButton.Text = "Remove";
+            this.RemoveButton.UseVisualStyleBackColor = true;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.TabIndex = 12;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // StatusLabel
+            // 
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(31, 17);
+            this.StatusLabel.Text = "Wait";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.RemoveButton);
+            this.Controls.Add(this.ScaleButton);
+            this.Controls.Add(this.RotateButton);
+            this.Controls.Add(this.LayersList);
             this.Controls.Add(this.AngleButton);
             this.Controls.Add(this.ParaButton);
             this.Controls.Add(this.RedrawButton);
@@ -190,6 +269,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -211,6 +292,12 @@
         private System.Windows.Forms.Button RedrawButton;
         private System.Windows.Forms.Button ParaButton;
         private System.Windows.Forms.Button AngleButton;
+        private System.Windows.Forms.ListBox LayersList;
+        private System.Windows.Forms.Button RotateButton;
+        private System.Windows.Forms.Button ScaleButton;
+        private System.Windows.Forms.Button RemoveButton;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
     }
 }
 

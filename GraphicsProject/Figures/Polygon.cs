@@ -76,5 +76,10 @@ namespace GraphicsProject.Figures
                 Line.Draw(Points[i], Points[i + 1]);
             }
         }
+
+        public override string ToString()
+        {
+            return "Poly";
+        }
     }
 }

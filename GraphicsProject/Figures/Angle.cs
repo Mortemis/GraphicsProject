@@ -24,6 +24,11 @@ namespace GraphicsProject.Figures
             Points.Add(new Point(Begin.X, End.Y));
             Points.Add(Begin);
         }
-    
+
+        public override string ToString()
+        {
+            return "Angle";
+        }
+
     }
 }
