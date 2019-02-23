@@ -206,6 +206,7 @@
             this.RotateButton.TabIndex = 9;
             this.RotateButton.Text = "Rotate";
             this.RotateButton.UseVisualStyleBackColor = true;
+            this.RotateButton.Click += new System.EventHandler(this.RotateButton_Click);
             // 
             // ScaleButton
             // 
@@ -217,6 +218,7 @@
             this.ScaleButton.TabIndex = 10;
             this.ScaleButton.Text = "Scale";
             this.ScaleButton.UseVisualStyleBackColor = true;
+            this.ScaleButton.Click += new System.EventHandler(this.ScaleButton_Click);
             // 
             // RemoveButton
             // 
@@ -228,6 +230,7 @@
             this.RemoveButton.TabIndex = 11;
             this.RemoveButton.Text = "Remove";
             this.RemoveButton.UseVisualStyleBackColor = true;
+            this.RemoveButton.Click += new System.EventHandler(this.RemoveButton_Click);
             // 
             // statusStrip1
             // 

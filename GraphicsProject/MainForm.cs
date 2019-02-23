@@ -12,7 +12,7 @@ using GraphicsProject.Figures;
 
 /*
  * Var 37. 
- * Figures: Bezier +, parallelogram, angle 2
+ * Figures: Bezier +, parallelogram +, angle 2+
  * Straight line +
  * Transformations: rotate on custom angle, rotate 30 degrees, scale on center of figure
  * Also move
@@ -35,9 +35,7 @@ namespace GraphicsProject
 
     public partial class MainForm : Form
     {
-        //Не очень хочу передавать это как параметр в метод PutPoint класса Figure через каждый метод Draw, поэтому делаю статическим.
-        //Надеюсь, это не страшно, но если вдруг страшно, то 
-        //TODO Исправь, если страшно или убери этот кусок комментов, если не очень страшно.
+
         public static Graphics g;
 
         //TODO Width and height change on window resize.
@@ -50,10 +48,9 @@ namespace GraphicsProject
         private Point FirstPoint;
         Bezier ActiveBezier;
 
-        // TODO layers
         // Идея слоистости - есть лист абстрактного класса Figure, в котором есть метод Draw. 
         // Добавляем в него фигурки, наследующие его, и при любом апдейте просто вызываем метод Draw для всего листа.
-        // Может быть, стоит повесить в юи список, чтобы выбирать фигуры можно было и через этот список. 
+        // Может быть, стоит повесить в юи список, чтобы выбирать фигуры можно было и через этот список. (Готово)
         // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
         List<Figure> Layers = new List<Figure>();
         int SelectedLayer = -1; //-1 - no select
@@ -79,11 +76,12 @@ namespace GraphicsProject
 
         private void FullUpdateCanvas()
         {
+            g.Clear(Color.White);
             LayersList.Items.Clear();
             foreach (Figure figure in Layers)
             {
                 figure.Draw();
-                
+
                 LayersList.Items.Add(figure.ToString());
             }
         }
@@ -103,6 +101,7 @@ namespace GraphicsProject
                 RotateButton.Enabled = false;
                 ScaleButton.Enabled = false;
                 RemoveButton.Enabled = false;
+                LayersList.ClearSelected();
             }
 
             if (NewState == State.SELECTED)
@@ -110,16 +109,16 @@ namespace GraphicsProject
                 RotateButton.Enabled = true;
                 ScaleButton.Enabled = true;
                 RemoveButton.Enabled = true;
+                
             }
-
             CurrentState = NewState;
             ManageStatus();
-            LayersList.ClearSelected();
+            
         }
 
         private void LineButton_Click(object sender, EventArgs e)
         {
-            ChangeState(State.DRAW_LINE);          
+            ChangeState(State.DRAW_LINE);
         }
 
         private void BezierButton_Click(object sender, EventArgs e)
@@ -136,6 +135,33 @@ namespace GraphicsProject
         private void AngleButton_Click(object sender, EventArgs e)
         {
             ChangeState(State.DRAW_ANGLE);
+        }
+
+        private void RotateButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ScaleButton_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RemoveButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Layers.RemoveAt(LayersList.SelectedIndex);
+                FullUpdateCanvas();
+                ChangeState(State.WAIT);
+            }
+            catch (IndexOutOfRangeException) { }
+        }
+
+        private void RedrawButton_Click(object sender, EventArgs e)
+        {
+            FullUpdateCanvas();
+            LayersList.ClearSelected();
         }
 
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
@@ -207,12 +233,7 @@ namespace GraphicsProject
             }
         }
 
-        private void RedrawButton_Click(object sender, EventArgs e)
-        {
-            g.Clear(Color.White);
-            FullUpdateCanvas();
-            LayersList.ClearSelected();
-        }
+        
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -233,5 +254,7 @@ namespace GraphicsProject
             SelectedLayer = LayersList.SelectedIndex;
             ChangeState(State.SELECTED);
         }
+
+
     }
 }
