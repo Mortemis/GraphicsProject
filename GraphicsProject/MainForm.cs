@@ -95,7 +95,7 @@ namespace GraphicsProject
 
         private void ChangeState(State NewState)
         {
-            if (CurrentState == State.SELECTED)
+            if (CurrentState == State.SELECTED && NewState != State.SELECTED)
             {
                 SelectedLayer = -1;
                 RotateButton.Enabled = false;
@@ -139,12 +139,12 @@ namespace GraphicsProject
 
         private void RotateButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            RotateButton.Enabled = false;
         }
 
         private void ScaleButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ScaleButton.Enabled = false;
         }
 
         private void RemoveButton_Click(object sender, EventArgs e)
@@ -253,6 +253,12 @@ namespace GraphicsProject
         {
             SelectedLayer = LayersList.SelectedIndex;
             ChangeState(State.SELECTED);
+            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            {
+                FullUpdateCanvas();
+                Layers[SelectedLayer].DrawSelect();
+            }
+            //DrawRectangle on selected Layer.
         }
 
 
