@@ -101,6 +101,11 @@ namespace GraphicsProject
             _currentState = State.Rotate;
         }
 
+        private void btnMirror_Click(object sender, EventArgs e)
+        {
+            _currentState = State.HorMirror;
+        }
+
         #endregion
 
         #region Canvas mouse click
@@ -152,13 +157,39 @@ namespace GraphicsProject
                     _isFigureSelected = _selectedFigure != null;
                      if ((e.Button & MouseButtons.Right) != 0)
                      {
-                        _selectedFigure?.Rotate(_lastLocation,(int) angleRotate.Value);
+                         _selectedFigure?.Rotate(_lastLocation, (int) angleRotate.Value);
+                         G.Clear(CanvasBox.BackColor);
+                         foreach (var figure in _figures)
+                             figure?.Draw();
+                     }
+
+                     break;
+
+                case State.HorMirror:
+                    if ((e.Button & MouseButtons.Left) != 0)
+                    {
+                        _selectedFigure =
+                            _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
+                        _isFigureSelected = _selectedFigure != null;
+
+                    }
+
+                    if ((e.Button & MouseButtons.Right) != 0)
+                    {
+                        AddPoint(_lastLocation);
+                        if (_points.Count == 2)
+                        {
+                            _selectedFigure?.Mirror(_points[0],_points[1]);
+                            new Line(_points);
+                            _points = new List<PointF>();
+                        }
+
                         G.Clear(CanvasBox.BackColor);
                         foreach (var figure in _figures)
                             figure?.Draw();
                     }
-
-                     break;
+                   
+                    break;
             }
 
             CanvasBox.Image = _bitmap;
@@ -202,8 +233,9 @@ namespace GraphicsProject
 
 
 
+
         #endregion
 
-       
+     
     }
 }

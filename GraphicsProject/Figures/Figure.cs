@@ -30,8 +30,7 @@ namespace GraphicsProject.Figures
             Draw();
         }
 
-        //поворот на 30
-        public virtual void Rotate(PointF p,double angle)
+        public virtual void Rotate(PointF p, double angle)
         {
             var angleRad = angle * Math.PI / 180D;
             double cosf = Math.Cos(angleRad);
@@ -44,6 +43,31 @@ namespace GraphicsProject.Figures
             C = MatrixUtils.MatrixMult(C, MatrixUtils.MatrixMult(M, MatrixUtils.MatrixMult(R, MObr)));
         }
 
+        public virtual void Mirror(PointF a, PointF b)
+        {
+            PointF o = new PointF(b.X, a.Y);
+            double ax = b.X - a.X;
+            double ay = b.Y - a.Y;
+            double bx = o.X - a.X;
+            //(ax * bx + ay * by) / (Math.Sqrt(ax * ax + ay * ay) * Math.Sqrt(bx * bx + by * by)) но by=0, так что упрощаем
+            double cosf = (ax * bx) / (Math.Sqrt(ax * ax + ay * ay) * Math.Sqrt(bx * bx));
+            double sinf = Math.Sqrt(1 - cosf * cosf);
+
+            if ((ax * ay) > 0) sinf = -sinf;
+            PointF c = new PointF((b.X - a.X) / 2 + a.X, (b.Y - a.Y) / 2 + a.Y);
+
+            double[,] M = {{1, 0, 0}, {0, 1, 0}, {-c.X, -c.Y, 1}};
+            double[,] MObr = {{1, 0, 0}, {0, 1, 0}, {c.X, c.Y, 1}};
+            double[,] S = {{1, 0, 0}, {0, -1, 0}, {0, 0, 1}};
+            double[,] R = {{cosf, sinf, 0}, {-sinf, cosf, 0}, {0, 0, 1}};
+            double[,] RObr = {{cosf, -sinf, 0}, {sinf, cosf, 0}, {0, 0, 1}};
+
+            C = MatrixUtils.MatrixMult(C,
+                MatrixUtils.MatrixMult(M,
+                    MatrixUtils.MatrixMult(R, 
+                        MatrixUtils.MatrixMult(S, 
+                            MatrixUtils.MatrixMult(RObr, MObr)))));
+        }
 
         // выделение многоугольника
         public virtual bool IsSelected(int mX, int mY)

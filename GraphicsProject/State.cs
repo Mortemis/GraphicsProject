@@ -9,6 +9,8 @@
         CubicSpline,
         Move,
         Rotate,
+        HorMirror,
+
 
         Wait,
         Selected,

@@ -44,7 +44,7 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.btnMove = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.btnMirror = new System.Windows.Forms.Button();
             this.btnRotate = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -218,7 +218,7 @@
             this.flowLayoutPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowLayoutPanel2.Controls.Add(this.label3);
             this.flowLayoutPanel2.Controls.Add(this.btnMove);
-            this.flowLayoutPanel2.Controls.Add(this.button2);
+            this.flowLayoutPanel2.Controls.Add(this.btnMirror);
             this.flowLayoutPanel2.Controls.Add(this.btnRotate);
             this.flowLayoutPanel2.Controls.Add(this.panel3);
             this.flowLayoutPanel2.Controls.Add(this.panel1);
@@ -256,19 +256,20 @@
             this.btnMove.UseVisualStyleBackColor = false;
             this.btnMove.Click += new System.EventHandler(this.btnMove_Click);
             // 
-            // button2
+            // btnMirror
             // 
-            this.button2.AutoSize = true;
-            this.button2.BackColor = System.Drawing.SystemColors.Window;
-            this.button2.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
-            this.button2.FlatAppearance.BorderSize = 0;
-            this.button2.Location = new System.Drawing.Point(0, 56);
-            this.button2.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(251, 29);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Отражение относительно прямой";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnMirror.AutoSize = true;
+            this.btnMirror.BackColor = System.Drawing.SystemColors.Window;
+            this.btnMirror.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
+            this.btnMirror.FlatAppearance.BorderSize = 0;
+            this.btnMirror.Location = new System.Drawing.Point(0, 56);
+            this.btnMirror.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.btnMirror.Name = "btnMirror";
+            this.btnMirror.Size = new System.Drawing.Size(251, 29);
+            this.btnMirror.TabIndex = 2;
+            this.btnMirror.Text = "Отражение относительно прямой";
+            this.btnMirror.UseVisualStyleBackColor = false;
+            this.btnMirror.Click += new System.EventHandler(this.btnMirror_Click);
             // 
             // btnRotate
             // 
@@ -373,7 +374,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnMove;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button btnMirror;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Button button1;
