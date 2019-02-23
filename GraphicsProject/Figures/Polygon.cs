@@ -3,29 +3,29 @@ using System.Drawing;
 
 namespace GraphicsProject.Figures
 {
-    abstract class Polygon : Figure
+    public abstract class Polygon : Figure
     {
-        List<Point> points = new List<Point>();
+        public List<Point> Points = new List<Point>();
 
 
         public void Fill()
         {
             int yMin;
             int yMax;
-            yMin = points[0].Y;
-            yMax = points[0].Y;
+            yMin = Points[0].Y;
+            yMax = Points[0].Y;
 
             //Вычисление минимального и максимального Y.
-            for (int y = 1; y < points.Count; y++)
+            for (int y = 1; y < Points.Count; y++)
             {
-                if (points[y].Y < yMin)
+                if (Points[y].Y < yMin)
                 {
-                    yMin = points[y].Y;
+                    yMin = Points[y].Y;
                 }
 
-                if (points[y].Y > yMax)
+                if (Points[y].Y > yMax)
                 {
-                    yMax = points[y].Y;
+                    yMax = Points[y].Y;
                 }
             }
 
@@ -34,10 +34,10 @@ namespace GraphicsProject.Figures
             for (int y = yMin; y < yMax + 1; y++)
             {
                 List<int> xList = new List<int>();
-                for (int j = 0; j < points.Count - 1; j++)
+                for (int j = 0; j < Points.Count - 1; j++)
                 {
                     int k;
-                    if (j < points.Count)
+                    if (j < Points.Count)
                     {
                         k = j + 1;
                     }
@@ -45,10 +45,10 @@ namespace GraphicsProject.Figures
                     {
                         k = 0;
                     }
-                    if ((points[j].Y < y && points[k].Y >= y) || (points[j].Y >= y && points[k].Y < y))
+                    if ((Points[j].Y < y && Points[k].Y >= y) || (Points[j].Y >= y && Points[k].Y < y))
                     {
-                        Point pt1 = points[j];
-                        Point pt2 = points[k];
+                        Point pt1 = Points[j];
+                        Point pt2 = Points[k];
                         Point pt3 = new Point(0, y);
                         // HACK idk how to get width from canvas
                         Point pt4 = new Point(MainForm.width - 1, y);
@@ -69,6 +69,12 @@ namespace GraphicsProject.Figures
             }
         }
 
-
+        public override void Draw()
+        {
+            for (int i = 0; i < Points.Count-1; i++)
+            {
+                Line.Draw(Points[i], Points[i + 1]);
+            }
+        }
     }
 }

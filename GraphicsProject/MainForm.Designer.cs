@@ -30,9 +30,9 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CanvasBox = new System.Windows.Forms.PictureBox();
@@ -40,6 +40,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.BezierButton = new System.Windows.Forms.Button();
             this.RedrawButton = new System.Windows.Forms.Button();
+            this.ParaButton = new System.Windows.Forms.Button();
+            this.AngleButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.SuspendLayout();
@@ -58,30 +60,32 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
+            this.NewToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.exitToolStripMenuItem});
+            this.ExitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // newToolStripMenuItem
+            // NewToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
-            this.newToolStripMenuItem.Text = "New";
+            this.NewToolStripMenuItem.Name = "NewToolStripMenuItem";
+            this.NewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.NewToolStripMenuItem.Text = "New";
+            this.NewToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
-            // exitToolStripMenuItem
+            // ExitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExitToolStripMenuItem.Text = "Exit";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -147,11 +151,33 @@
             this.RedrawButton.UseVisualStyleBackColor = true;
             this.RedrawButton.Click += new System.EventHandler(this.RedrawButton_Click);
             // 
+            // ParaButton
+            // 
+            this.ParaButton.Location = new System.Drawing.Point(12, 85);
+            this.ParaButton.Name = "ParaButton";
+            this.ParaButton.Size = new System.Drawing.Size(84, 23);
+            this.ParaButton.TabIndex = 6;
+            this.ParaButton.Text = "Para";
+            this.ParaButton.UseVisualStyleBackColor = true;
+            this.ParaButton.Click += new System.EventHandler(this.ParaButton_Click);
+            // 
+            // AngleButton
+            // 
+            this.AngleButton.Location = new System.Drawing.Point(12, 114);
+            this.AngleButton.Name = "AngleButton";
+            this.AngleButton.Size = new System.Drawing.Size(84, 23);
+            this.AngleButton.TabIndex = 7;
+            this.AngleButton.Text = "Angle";
+            this.AngleButton.UseVisualStyleBackColor = true;
+            this.AngleButton.Click += new System.EventHandler(this.AngleButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.AngleButton);
+            this.Controls.Add(this.ParaButton);
             this.Controls.Add(this.RedrawButton);
             this.Controls.Add(this.BezierButton);
             this.Controls.Add(this.label1);
@@ -173,9 +199,9 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.PictureBox CanvasBox;
@@ -183,6 +209,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button BezierButton;
         private System.Windows.Forms.Button RedrawButton;
+        private System.Windows.Forms.Button ParaButton;
+        private System.Windows.Forms.Button AngleButton;
     }
 }
 

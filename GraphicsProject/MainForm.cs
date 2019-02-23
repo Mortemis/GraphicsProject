@@ -95,6 +95,16 @@ namespace GraphicsProject
             ActiveBezier = new Bezier();
         }
 
+        private void ParaButton_Click(object sender, EventArgs e)
+        {
+            CurrentState = State.DRAW_PARA;
+        }
+
+        private void AngleButton_Click(object sender, EventArgs e)
+        {
+            CurrentState = State.DRAW_ANGLE;
+        }
+
 
         // Maybe replace with mouse click...
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
@@ -128,6 +138,16 @@ namespace GraphicsProject
                         }
                         break;
                     }
+                case State.DRAW_PARA:
+                    {
+                        FirstPoint = e.Location;
+                        break;
+                    }
+                case State.DRAW_ANGLE:
+                    {
+                        FirstPoint = e.Location;
+                        break;
+                    }
             }
         }
 
@@ -141,6 +161,18 @@ namespace GraphicsProject
                         UpdateCanvas(Layers.Count - 1);
                         break;
                     }
+                case State.DRAW_PARA:
+                    {
+                        Layers.Add(new Para(FirstPoint, e.Location));
+                        UpdateCanvas(Layers.Count - 1);
+                        break;
+                    }
+                case State.DRAW_ANGLE:
+                    {
+                        Layers.Add(new Angle(FirstPoint, e.Location));
+                        UpdateCanvas(Layers.Count - 1);
+                        break;
+                    }
             }
         }
 
@@ -149,5 +181,19 @@ namespace GraphicsProject
             g.Clear(Color.White);
             FullUpdateCanvas();
         }
+
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            g.Clear(Color.White);
+            Layers.Clear();
+            FullUpdateCanvas();
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Dispose();
+        }
+
+        
     }
 }

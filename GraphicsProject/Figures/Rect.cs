@@ -5,29 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace GraphicsProject.Figures
 {
-    class Para : Polygon
+    public class Rect : Polygon
     {
-
-        public Para(Point Begin, Point End)
+        public Rect(Point Begin, Point End)
         {
-            SelectBegin = Begin;
-            SelectEnd = End;
-
             Points = new List<Point>();
-            int Shift = (int)((End.X - Begin.X)/1.5);
-            Point Point1 = new Point(Begin.X + Shift, End.Y);
+            Point Point1 = new Point(Begin.X, End.Y);
             Point Point2 = new Point(End.X, Begin.Y);
-            Point Point3 = new Point(End.X - Shift, Begin.Y);
-            Point Point4 = new Point(Begin.X, End.Y);
+            Points.Add(Begin);
             Points.Add(Point1);
+            Points.Add(End);
             Points.Add(Point2);
-            Points.Add(Point3);
-            Points.Add(Point4);
-            Points.Add(Point1);
+            Points.Add(Begin);
         }
+
         /*
         public override void Draw()
         {
