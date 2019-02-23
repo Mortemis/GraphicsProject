@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Expander;
 using GraphicsProject.Figures;
 
 
@@ -20,134 +22,165 @@ using GraphicsProject.Figures;
  */
 
 
-
-
-
-
 namespace GraphicsProject
 {
-
-    // State of UI
-    enum State : int
-    {
-        Wait, Selected, DrawLine, DrawBezier, DrawPara, DrawAngle, Scale
-    }
-
     public partial class MainForm : Form
     {
-        //Не очень хочу передавать это как параметр в метод PutPoint класса Figure через каждый метод Draw, поэтому делаю статическим.
-        //Надеюсь, это не страшно, но если вдруг страшно, то 
-        //TODO Исправь, если страшно или убери этот кусок комментов, если не очень страшно.
         public static Graphics G;
 
-        //TODO Width and height change on window resize.
-        //HACK Fix me please, i am a mistake.
-        public static int Width;
-        public static int Height;
+        public static int CanvasWidth;
+        public static int CanvasHeight;
+
         public static Pen DrawPen = new Pen(Color.Black, 1);
+        private readonly Bitmap _bitmap;
+
         private State _currentState;
 
-        private Point _firstPoint;
-        Bezier _activeBezier;
+        private Point _lastLocation;
 
-        // TODO layers
-        // Идея слоистости - есть лист абстрактного класса Figure, в котором есть метод Draw. 
-        // Добавляем в него фигурки, наследующие его, и при любом апдейте просто вызываем метод Draw для всего листа.
-        // Может быть, стоит повесить в юи список, чтобы выбирать фигуры можно было и через этот список. 
-        // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
-        List<Figure> _layers = new List<Figure>();
-
+        private List<PointF> _points;
+        private readonly ObservableCollection<Figure> _figures;
+        private Figure _selectedFigure;
+        private bool _isFigureSelected;
 
         public MainForm()
         {
             InitializeComponent();
-            Width = CanvasBox.Width;
-            Height = CanvasBox.Height;
+            CanvasWidth = CanvasBox.Width;
+            CanvasHeight = CanvasBox.Height;
             _currentState = State.Wait;
-            G = CanvasBox.CreateGraphics();
-        }
 
-        // Update from index to end. Fix.
-        private void UpdateCanvas(int index)
-        {
-            for (int i = index; i < _layers.Count; i++)
+            anglesCounter.Maximum = 20;
+            anglesCounter.Minimum = 3;
+
+            _bitmap = new Bitmap(CanvasWidth, CanvasHeight);
+            G = Graphics.FromImage(_bitmap);
+
+            _points = new List<PointF>();
+            _figures = new ObservableCollection<Figure>();
+            _figures.CollectionChanged += (sender, args) =>
             {
-                _layers[i].Draw();
-            }
+               // if (args.NewItems.Count != 0) _points = new List<PointF>();
+            };
         }
 
-        private void FullUpdateCanvas()
-        {
-            foreach (Figure figure in _layers)
-            {
-                figure.Draw();
-            }
-        }
+        #region Choose primitive
 
-        private void LineButton_Click(object sender, EventArgs e)
+        private void btnLine_Click(object sender, EventArgs e)
         {
             _currentState = State.DrawLine;
         }
 
-        private void BezierButton_Click(object sender, EventArgs e)
+        private void btnTgp_Click(object sender, EventArgs e)
         {
-            _currentState = State.DrawBezier;
-            _activeBezier = new Bezier();
+            _currentState = State.Tgp;
         }
 
+        private void btnCubicSpline_Click(object sender, EventArgs e)
+        {
+            _currentState = State.CubicSpline;
+        }
 
-        // Maybe replace with mouse click...
+        private void btnPgn_Click(object sender, EventArgs e)
+        {
+            _currentState = State.Pgn;
+        }
+
+        #endregion
+
+        #region Choose operation
+
+        private void btnMove_Click(object sender, EventArgs e)
+        {
+            _currentState = State.Move;
+        }
+
+        #endregion
+
+        #region Canvas mouse click
+
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
+            _lastLocation = e.Location;
+
             switch (_currentState)
             {
-                case State.Wait:
-                    {
-                        //TODO Select
-                        break;
-                    }
-                case State.Selected:
-                    {
-                        //TODO Enable scale and rotate buttons
-                        break;
-                    }
                 case State.DrawLine:
+                    AddPoint(_lastLocation);
+                    if (_points.Count == 2)
+                        _figures.Add(new Line(_points));
+                    break;
+
+                case State.Tgp:
+                    _figures.Add(new Tgp(_lastLocation));
+                    break;
+
+                case State.Pgn:
+                    AddPoint(_lastLocation);
+                    if (_points.Count == 2)
+                        _figures.Add(new Pgn(_points, (int) anglesCounter.Value));
+                    break;
+
+                case State.CubicSpline:
+                    AddPoint(_lastLocation);
+                    switch (_points.Count)
                     {
-                        _firstPoint = e.Location;
-                        break;
+                        case 2:
+                            G.DrawLine(DrawPen, _points[0], _points[1]);
+                            break;
+                        case 4:
+                            G.DrawLine(DrawPen, _points[2], _points[3]);
+                            _figures.Add(new CubicSpline(_points));
+                            break;
                     }
-                case State.DrawBezier:
-                    {
-                        _activeBezier.AddPoint(e.Location);
-                        if (e.Button == MouseButtons.Right)
-                        {
-                            _activeBezier.Finish();
-                            _layers.Add(_activeBezier);
-                            _activeBezier = new Bezier();
-                            UpdateCanvas(_layers.Count - 1);
-                        }
-                        break;
-                    }
+
+                    break;
+
+                case State.Move:
+                    _selectedFigure = _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
+                    _isFigureSelected = _selectedFigure != null;
+                    break;
             }
+
+            CanvasBox.Image = _bitmap;
         }
+
+        private void CanvasBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if(!_isFigureSelected) return;
+            switch (_currentState)
+            {
+                case State.Move:
+                    _selectedFigure?.Move(e.X - _lastLocation.X,e.Y - _lastLocation.Y);
+                    G.Clear(CanvasBox.BackColor);
+                    foreach (var figure in _figures)                    
+                       figure.Draw();
+                    
+
+                    
+                    break;
+            }
+
+            _lastLocation = e.Location;
+            CanvasBox.Image = _bitmap;
+        }
+
+        #endregion
+
+        #region Private utils(dlya udobvstva)
+
+        private void AddPoint(PointF point)
+        {
+            Figure.PutPoint(point);
+            _points.Add(point);
+        }
+
+
+        #endregion
 
         private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
         {
-            switch (_currentState)
-            {
-                case State.DrawLine:
-                    {
-                        _layers.Add(new Line(_firstPoint, e.Location));
-                        UpdateCanvas(_layers.Count - 1);
-                        break;
-                    }
-            }
-        }
-
-        private void RedrawButton_Click(object sender, EventArgs e)
-        {
-            G.Clear(Color.White);
-            FullUpdateCanvas();
+            _isFigureSelected = false;
         }
     }
 }
