@@ -64,6 +64,7 @@ namespace GraphicsProject.Figures
                 xList.Sort();
                 for (int j = 0; j < xList.Count / 2; j += 2)
                 {
+                    Line.Draw(new Point(xList[j], y), new Point(xList[j + 1], y));
                     //DrawLine(DrawPen, xList[j], y, xList[j + 1], y);  //= new Line...
                 }
             }
@@ -75,6 +76,7 @@ namespace GraphicsProject.Figures
             {
                 Line.Draw(Points[i], Points[i + 1]);
             }
+            Fill();
         }
 
         public override string ToString()

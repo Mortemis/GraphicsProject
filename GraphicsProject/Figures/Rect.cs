@@ -21,6 +21,14 @@ namespace GraphicsProject.Figures
             Points.Add(Begin);
         }
 
+        public override void Draw()
+        {
+            for (int i = 0; i < Points.Count - 1; i++)
+            {
+                Line.Draw(Points[i], Points[i + 1]);
+            }
+        }
+
         public override string ToString()
         {
             return "Rect";
