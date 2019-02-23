@@ -37,6 +37,7 @@ namespace GraphicsProject
         private State _currentState;
 
         private Point _lastLocation;
+        private Point _rotateLocation;
 
         private List<PointF> _points;
         private readonly ObservableCollection<Figure> _figures;
@@ -60,7 +61,7 @@ namespace GraphicsProject
             _figures = new ObservableCollection<Figure>();
             _figures.CollectionChanged += (sender, args) =>
             {
-               // if (args.NewItems.Count != 0) _points = new List<PointF>();
+                if (args.NewItems.Count != 0) _points = new List<PointF>();
             };
         }
 
@@ -93,6 +94,11 @@ namespace GraphicsProject
         private void btnMove_Click(object sender, EventArgs e)
         {
             _currentState = State.Move;
+        }
+
+        private void btnRotate_Click(object sender, EventArgs e)
+        {
+            _currentState = State.Rotate;
         }
 
         #endregion
@@ -140,6 +146,19 @@ namespace GraphicsProject
                     _selectedFigure = _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
                     _isFigureSelected = _selectedFigure != null;
                     break;
+
+                case State.Rotate:
+                     _selectedFigure = _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
+                    _isFigureSelected = _selectedFigure != null;
+                     if ((e.Button & MouseButtons.Right) != 0)
+                     {
+                        _selectedFigure?.Rotate(_lastLocation,(int) angleRotate.Value);
+                        G.Clear(CanvasBox.BackColor);
+                        foreach (var figure in _figures)
+                            figure?.Draw();
+                    }
+
+                     break;
             }
 
             CanvasBox.Image = _bitmap;
@@ -165,9 +184,15 @@ namespace GraphicsProject
             CanvasBox.Image = _bitmap;
         }
 
+
+        private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            _isFigureSelected = false;
+        }
+
         #endregion
 
-        #region Private utils(dlya udobvstva)
+        #region Private utils(ne dlya udobvstva)
 
         private void AddPoint(PointF point)
         {
@@ -176,11 +201,9 @@ namespace GraphicsProject
         }
 
 
+
         #endregion
 
-        private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            _isFigureSelected = false;
-        }
+       
     }
 }

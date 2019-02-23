@@ -8,6 +8,7 @@
         Pgn,
         CubicSpline,
         Move,
+        Rotate,
 
         Wait,
         Selected,

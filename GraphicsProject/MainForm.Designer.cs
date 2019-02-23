@@ -45,20 +45,20 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnMove = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnRotate = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.angleRotate = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.anglesCounter)).BeginInit();
             this.flowLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel3.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.angleRotate)).BeginInit();
+            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -219,7 +219,7 @@
             this.flowLayoutPanel2.Controls.Add(this.label3);
             this.flowLayoutPanel2.Controls.Add(this.btnMove);
             this.flowLayoutPanel2.Controls.Add(this.button2);
-            this.flowLayoutPanel2.Controls.Add(this.button3);
+            this.flowLayoutPanel2.Controls.Add(this.btnRotate);
             this.flowLayoutPanel2.Controls.Add(this.panel3);
             this.flowLayoutPanel2.Controls.Add(this.panel1);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -270,19 +270,20 @@
             this.button2.Text = "Отражение относительно прямой";
             this.button2.UseVisualStyleBackColor = false;
             // 
-            // button3
+            // btnRotate
             // 
-            this.button3.AutoSize = true;
-            this.button3.BackColor = System.Drawing.SystemColors.Window;
-            this.button3.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
-            this.button3.FlatAppearance.BorderSize = 0;
-            this.button3.Location = new System.Drawing.Point(0, 86);
-            this.button3.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(251, 29);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Поворот";
-            this.button3.UseVisualStyleBackColor = false;
+            this.btnRotate.AutoSize = true;
+            this.btnRotate.BackColor = System.Drawing.SystemColors.Window;
+            this.btnRotate.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
+            this.btnRotate.FlatAppearance.BorderSize = 0;
+            this.btnRotate.Location = new System.Drawing.Point(0, 86);
+            this.btnRotate.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.btnRotate.Name = "btnRotate";
+            this.btnRotate.Size = new System.Drawing.Size(251, 29);
+            this.btnRotate.TabIndex = 7;
+            this.btnRotate.Text = "Поворот";
+            this.btnRotate.UseVisualStyleBackColor = false;
+            this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
             // 
             // panel3
             // 
@@ -292,6 +293,33 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(0, 0);
             this.panel3.TabIndex = 5;
+            // 
+            // panel1
+            // 
+            this.panel1.AutoSize = true;
+            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel1.Controls.Add(this.angleRotate);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Location = new System.Drawing.Point(3, 124);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(206, 29);
+            this.panel1.TabIndex = 8;
+            // 
+            // angleRotate
+            // 
+            this.angleRotate.Location = new System.Drawing.Point(141, 4);
+            this.angleRotate.Name = "angleRotate";
+            this.angleRotate.Size = new System.Drawing.Size(62, 22);
+            this.angleRotate.TabIndex = 1;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(54, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 17);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Угол(град):";
             // 
             // flowLayoutPanel3
             // 
@@ -303,33 +331,6 @@
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
             this.flowLayoutPanel3.Size = new System.Drawing.Size(255, 953);
             this.flowLayoutPanel3.TabIndex = 2;
-            // 
-            // panel1
-            // 
-            this.panel1.AutoSize = true;
-            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.Controls.Add(this.numericUpDown1);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Location = new System.Drawing.Point(3, 124);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(206, 29);
-            this.panel1.TabIndex = 8;
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(141, 4);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(62, 22);
-            this.numericUpDown1.TabIndex = 1;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(54, 6);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(81, 17);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Угол(град):";
             // 
             // MainForm
             // 
@@ -349,10 +350,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.anglesCounter)).EndInit();
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
-            this.flowLayoutPanel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.angleRotate)).EndInit();
+            this.flowLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -376,9 +377,9 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnRotate;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown angleRotate;
         private System.Windows.Forms.Label label4;
     }
 }

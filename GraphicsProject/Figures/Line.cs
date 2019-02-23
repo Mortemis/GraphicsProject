@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace GraphicsProject.Figures
 {
@@ -8,6 +9,7 @@ namespace GraphicsProject.Figures
     {
         public Line(IList<PointF> points) : base(points)
         {
+            Points = points.Select(point => point).ToList();
         }
 
         public static void Draw(Point begin, Point end)

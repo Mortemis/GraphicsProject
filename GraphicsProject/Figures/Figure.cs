@@ -30,6 +30,21 @@ namespace GraphicsProject.Figures
             Draw();
         }
 
+        //поворот на 30
+        public virtual void Rotate(PointF p,double angle)
+        {
+            var angleRad = angle * Math.PI / 180D;
+            double cosf = Math.Cos(angleRad);
+            double sinf = Math.Sin(angleRad);
+
+            double[,] M = {{1, 0, 0}, {0, 1, 0}, {-p.X, -p.Y, 1}};
+            double[,] MObr = {{1, 0, 0}, {0, 1, 0}, {p.X, p.Y, 1}};
+            double[,] R = {{cosf, -sinf, 0}, {sinf, cosf, 0}, {0, 0, 1}};
+
+            C = MatrixUtils.MatrixMult(C, MatrixUtils.MatrixMult(M, MatrixUtils.MatrixMult(R, MObr)));
+        }
+
+
         // выделение многоугольника
         public virtual bool IsSelected(int mX, int mY)
         {
@@ -95,11 +110,6 @@ namespace GraphicsProject.Figures
             }
 
             return newPoints;
-        }
-
-        public void EndMove()
-        {
-            Points = GetNewPoints();
         }
 
         public abstract void Draw();
