@@ -37,7 +37,7 @@ namespace GraphicsProject
     {
 
         public static Graphics g;
-
+        public static Bitmap bmp;
         //TODO Width and height change on window resize.
         //HACK Fix me please, i am a mistake.
         public static int width;
@@ -61,9 +61,11 @@ namespace GraphicsProject
             width = CanvasBox.Width;
             height = CanvasBox.Height;
             CurrentState = State.WAIT;
-            g = CanvasBox.CreateGraphics();
+            bmp = new Bitmap(width, height);
+            g = Graphics.FromImage(bmp);
         }
 
+        /*
         // Update from index to end. Fix.
         private void UpdateCanvas(int index)
         {
@@ -86,6 +88,17 @@ namespace GraphicsProject
             }
             CodeSelect = true;
             LayersList.SelectedIndex = SelectedLayer;
+        }
+        */
+
+        private void UpdateCanvas(int index)
+        {
+            CanvasBox.Image = bmp;
+        }
+
+        private void FullUpdateCanvas()
+        {
+            CanvasBox.Image = bmp;
         }
 
         private void ManageStatus()
@@ -111,11 +124,11 @@ namespace GraphicsProject
                 RotateButton.Enabled = true;
                 ScaleButton.Enabled = true;
                 RemoveButton.Enabled = true;
-                
+
             }
             CurrentState = NewState;
             ManageStatus();
-            
+
         }
 
         private void LineButton_Click(object sender, EventArgs e)
@@ -151,7 +164,7 @@ namespace GraphicsProject
 
         private void RemoveButton_Click(object sender, EventArgs e)
         {
-            if (CurrentState == State.SELECTED && LayersList.SelectedIndex != -1 )
+            if (CurrentState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
                 try
                 {
@@ -160,7 +173,8 @@ namespace GraphicsProject
                     ChangeState(State.WAIT);
                 }
                 catch (IndexOutOfRangeException) { }
-            } else
+            }
+            else
             {
                 RemoveButton.Enabled = false;
             }
@@ -241,7 +255,7 @@ namespace GraphicsProject
             }
         }
 
-        
+
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {

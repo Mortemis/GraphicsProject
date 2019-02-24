@@ -21,6 +21,7 @@ namespace GraphicsProject.Figures
         {
             MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
             
+            //MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
         }
     }
 
