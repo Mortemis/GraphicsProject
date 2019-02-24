@@ -54,6 +54,7 @@
     <Compile Include="Figures\Pgn.cs" />
     <Compile Include="Figures\Polygon.cs" />
     <Compile Include="Figures\Tgp.cs" />
+    <Compile Include="Figures\Tmo.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

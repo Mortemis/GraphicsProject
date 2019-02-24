@@ -109,7 +109,7 @@ namespace GraphicsProject.Figures
             return check;
         }
 
-        public void Move(int dx, int dy)
+        public virtual void Move(int dx, int dy)
         {
             //матрица движения
             double[,] M =
@@ -122,7 +122,7 @@ namespace GraphicsProject.Figures
             C = MatrixUtils.MatrixMult(C, M);
         }
 
-        protected List<PointF> GetNewPoints()
+        public List<PointF> GetNewPoints()
         {
             var newPoints = new List<PointF>();
             int n = Points.Count - 1;

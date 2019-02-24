@@ -10,6 +10,7 @@
         Move,
         Rotate,
         HorMirror,
+        TmoUnion,
 
 
         Wait,
@@ -17,6 +18,7 @@
         DrawBezier,
         DrawPara,
         DrawAngle,
-        Scale
+        Scale,
+        TmoIntersection
     }
 }

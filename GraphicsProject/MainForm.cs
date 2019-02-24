@@ -12,16 +12,6 @@ using Expander;
 using GraphicsProject.Figures;
 
 
-/*
- * Var 37. 
- * Figures: Bezier +, parallelogram, angle 2
- * Straight line +
- * Transformations: rotate on custom angle, rotate 30 degrees, scale on center of figure
- * Also move
- * Operations: AND, SUBTRACT
- */
-
-
 namespace GraphicsProject
 {
     public partial class MainForm : Form
@@ -36,12 +26,12 @@ namespace GraphicsProject
 
         private State _currentState;
 
-        private Point _lastLocation;
-        private Point _rotateLocation;
+        private Point _lastLocation;        
 
         private List<PointF> _points;
         private readonly ObservableCollection<Figure> _figures;
         private Figure _selectedFigure;
+        private Figure _secondSelectedFigure;
         private bool _isFigureSelected;
 
         public MainForm()
@@ -105,6 +95,8 @@ namespace GraphicsProject
         {
             _currentState = State.HorMirror;
         }
+
+
 
         #endregion
 
@@ -190,6 +182,13 @@ namespace GraphicsProject
                     }
                    
                     break;
+
+                case State.TmoUnion:
+                case State.TmoIntersection:
+                    _figures.Add(new Tmo(_selectedFigure,_secondSelectedFigure,_currentState));
+                    G.Clear(CanvasBox.BackColor);
+                    _figures[2].Draw();
+                    break;
             }
 
             CanvasBox.Image = _bitmap;
@@ -234,8 +233,19 @@ namespace GraphicsProject
 
 
 
+
         #endregion
 
-     
+        private void btnTmoUnion_Click(object sender, EventArgs e)
+        {
+            _currentState = State.TmoUnion;
+            _selectedFigure = _figures[0];
+            _secondSelectedFigure = _figures[1];
+        }
+
+        private void btnTmoIntersection_Click(object sender, EventArgs e)
+        {
+            _currentState = State.TmoIntersection;
+        }
     }
 }
