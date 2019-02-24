@@ -48,9 +48,11 @@
             this.RemoveButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.RotateNumerical = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -120,6 +122,7 @@
             this.CanvasBox.TabIndex = 1;
             this.CanvasBox.TabStop = false;
             this.CanvasBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseDown);
+            this.CanvasBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseMove);
             this.CanvasBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseUp);
             // 
             // LineButton
@@ -192,7 +195,7 @@
             this.LayersList.IntegralHeight = false;
             this.LayersList.Location = new System.Drawing.Point(704, 27);
             this.LayersList.Name = "LayersList";
-            this.LayersList.Size = new System.Drawing.Size(84, 305);
+            this.LayersList.Size = new System.Drawing.Size(84, 239);
             this.LayersList.TabIndex = 8;
             this.LayersList.SelectedIndexChanged += new System.EventHandler(this.LayersList_SelectedIndexChanged);
             this.LayersList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LayersList_MouseDown);
@@ -201,7 +204,7 @@
             // 
             this.RotateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RotateButton.Enabled = false;
-            this.RotateButton.Location = new System.Drawing.Point(704, 338);
+            this.RotateButton.Location = new System.Drawing.Point(704, 272);
             this.RotateButton.Name = "RotateButton";
             this.RotateButton.Size = new System.Drawing.Size(84, 23);
             this.RotateButton.TabIndex = 9;
@@ -213,7 +216,7 @@
             // 
             this.ScaleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ScaleButton.Enabled = false;
-            this.ScaleButton.Location = new System.Drawing.Point(704, 367);
+            this.ScaleButton.Location = new System.Drawing.Point(704, 327);
             this.ScaleButton.Name = "ScaleButton";
             this.ScaleButton.Size = new System.Drawing.Size(84, 23);
             this.ScaleButton.TabIndex = 10;
@@ -249,11 +252,20 @@
             this.StatusLabel.Size = new System.Drawing.Size(31, 17);
             this.StatusLabel.Text = "Wait";
             // 
+            // RotateNumerical
+            // 
+            this.RotateNumerical.Location = new System.Drawing.Point(705, 301);
+            this.RotateNumerical.Name = "RotateNumerical";
+            this.RotateNumerical.Size = new System.Drawing.Size(83, 20);
+            this.RotateNumerical.TabIndex = 13;
+            this.RotateNumerical.ValueChanged += new System.EventHandler(this.RotateNumerical_ValueChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.RotateNumerical);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RemoveButton);
             this.Controls.Add(this.ScaleButton);
@@ -275,6 +287,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -302,6 +315,7 @@
         private System.Windows.Forms.Button RemoveButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
+        private System.Windows.Forms.NumericUpDown RotateNumerical;
     }
 }
 

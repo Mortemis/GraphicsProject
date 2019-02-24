@@ -35,7 +35,7 @@ namespace GraphicsProject.Figures
             if (finished)
             {
                 int n = Lp.Count - 1;
-                double nFact = FactorialUtils.Factorials[n];
+                double nFact = Utils.MathUtils.Factorials[n];
 
                 //Шаг
                 double dt = 0.001;
@@ -52,7 +52,7 @@ namespace GraphicsProject.Figures
                     while (i <= n) // Было <=
                     {
                         //Интерполяционный полином Бернштейна
-                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (FactorialUtils.Factorials[i] * FactorialUtils.Factorials[n - i]);
+                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Utils.MathUtils.Factorials[i] * Utils.MathUtils.Factorials[n - i]);
                         xt = xt + Lp[i].X * J;
                         yt = yt + Lp[i].Y * J;
                         i++;
@@ -64,6 +64,11 @@ namespace GraphicsProject.Figures
                     t += dt;
                     xPred = xt; yPred = yt;
                 }
+            }
+
+            if (Rotation != 0)
+            {
+                Rotate(RotationCenter, Rotation);
             }
         }
 

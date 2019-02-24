@@ -103,6 +103,11 @@ namespace GraphicsProject.Figures
                     else x = x + Sx;
                 } while (true);
             }
+
+            if (Rotation != 0)
+            {
+                Rotate(RotationCenter, Rotation);
+            }
         }
 
         public override string ToString()

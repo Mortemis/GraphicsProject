@@ -30,7 +30,7 @@ namespace GraphicsProject
     // State of UI
     enum State : int
     {
-        WAIT, SELECTED, DRAW_LINE, DRAW_BEZIER, DRAW_PARA, DRAW_ANGLE, SCALE
+        WAIT, SELECTED, DRAW_LINE, DRAW_BEZIER, DRAW_PARA, DRAW_ANGLE, MOVE, ROTATE
     }
 
     public partial class MainForm : Form
@@ -55,6 +55,7 @@ namespace GraphicsProject
         List<Figure> Layers = new List<Figure>();
         int SelectedLayer = -1; //-1 - no select
         bool CodeSelect = false; // Protects from infinite cycle when selectedchange... event calls FullUpdate.
+
         public MainForm()
         {
             InitializeComponent();
@@ -91,9 +92,11 @@ namespace GraphicsProject
             }
             CodeSelect = true;
 
-            if (SelectedLayer < LayersList.Items.Count) {
+            if (SelectedLayer < LayersList.Items.Count)
+            {
                 LayersList.SelectedIndex = SelectedLayer;
-            } else
+            }
+            else
             {
                 //FIX out of bounds.
                 SelectedLayer--;
@@ -168,7 +171,7 @@ namespace GraphicsProject
 
         private void RotateButton_Click(object sender, EventArgs e)
         {
-            RotateButton.Enabled = false;
+            ChangeState(State.ROTATE);
         }
 
         private void ScaleButton_Click(object sender, EventArgs e)
@@ -183,6 +186,7 @@ namespace GraphicsProject
                 try
                 {
                     Layers.RemoveAt(LayersList.SelectedIndex);
+                    LayersList.Items.RemoveAt(LayersList.SelectedIndex);
                     FullUpdateCanvas();
                     ChangeState(State.WAIT);
                     CodeSelect = false;
@@ -214,7 +218,14 @@ namespace GraphicsProject
                     }
                 case State.SELECTED:
                     {
-                        //TODO Move 
+                        FirstPoint = e.Location;
+                        ChangeState(State.MOVE);
+                        break;
+                    }
+                    
+                case State.ROTATE:
+                    {
+                        Layers[SelectedLayer].RotationCenter = e.Location;
                         break;
                     }
                 case State.DRAW_LINE:
@@ -244,6 +255,7 @@ namespace GraphicsProject
                         FirstPoint = e.Location;
                         break;
                     }
+                    
             }
         }
 
@@ -269,11 +281,29 @@ namespace GraphicsProject
                         UpdateCanvas(Layers.Count - 1);
                         break;
                     }
+                case State.MOVE:
+                    {
+                        ChangeState(State.SELECTED);
+                        break;
+                    }
+            }
+        }
+
+        private void CanvasBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            switch (CurrentState)
+            {
+                case State.MOVE:
+                    {
+                        Layers[SelectedLayer].Move(e.X - FirstPoint.X, e.Y - FirstPoint.Y);
+                        FirstPoint = e.Location;
+                        break;
+                    }
             }
         }
         #endregion
 
-
+        #region Menu events
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             g.Clear(Color.White);
@@ -286,16 +316,27 @@ namespace GraphicsProject
         {
             Dispose();
         }
+        #endregion
 
+        #region Other events
         private void LayersList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!CodeSelect)
             {
                 SelectFigure();
-            } else {
+                try
+                {
+                    RotateNumerical.Value = Layers[SelectedLayer].Rotation;
+                } catch (ArgumentOutOfRangeException)
+                {
+                    RotateNumerical.Value = 0;
+                }
+            }
+            else
+            {
                 CodeSelect = false;
             }
-            
+
             //DrawRectangle on selected Layer.
         }
 
@@ -303,5 +344,17 @@ namespace GraphicsProject
         {
             CodeSelect = false;
         }
+
+        private void RotateNumerical_ValueChanged(object sender, EventArgs e)
+        {
+            if (CurrentState == State.ROTATE && SelectedLayer != -1)
+            {               
+                Layers[SelectedLayer].Rotation = (int)RotateNumerical.Value;
+                FullUpdateCanvas();
+            }
+        }
+        #endregion
+
+        
     }
 }
