@@ -77,20 +77,20 @@
             // NewToolStripMenuItem
             // 
             this.NewToolStripMenuItem.Name = "NewToolStripMenuItem";
-            this.NewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.NewToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.NewToolStripMenuItem.Text = "New";
             this.NewToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.ExitToolStripMenuItem.Text = "Exit";
             this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -105,7 +105,7 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
             // CanvasBox
@@ -195,6 +195,7 @@
             this.LayersList.Size = new System.Drawing.Size(84, 305);
             this.LayersList.TabIndex = 8;
             this.LayersList.SelectedIndexChanged += new System.EventHandler(this.LayersList_SelectedIndexChanged);
+            this.LayersList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LayersList_MouseDown);
             // 
             // RotateButton
             // 

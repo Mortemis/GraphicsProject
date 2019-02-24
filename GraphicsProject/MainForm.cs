@@ -65,15 +65,18 @@ namespace GraphicsProject
             g = Graphics.FromImage(bmp);
         }
 
-        /*
-        // Update from index to end. Fix.
+
         private void UpdateCanvas(int index)
         {
+            /*
             for (int i = index; i < Layers.Count; i++)
             {
                 Layers[i].Draw();
                 LayersList.Items.Add(Layers[i].ToString());
             }
+            CanvasBox.Image = bmp;
+            */
+            FullUpdateCanvas();
         }
 
         private void FullUpdateCanvas()
@@ -87,17 +90,16 @@ namespace GraphicsProject
                 LayersList.Items.Add(figure.ToString());
             }
             CodeSelect = true;
-            LayersList.SelectedIndex = SelectedLayer;
-        }
-        */
 
-        private void UpdateCanvas(int index)
-        {
-            CanvasBox.Image = bmp;
-        }
+            if (SelectedLayer < LayersList.Items.Count) {
+                LayersList.SelectedIndex = SelectedLayer;
+            } else
+            {
+                //FIX out of bounds.
+                SelectedLayer--;
+                LayersList.SelectedIndex = SelectedLayer;
+            }
 
-        private void FullUpdateCanvas()
-        {
             CanvasBox.Image = bmp;
         }
 
@@ -128,9 +130,21 @@ namespace GraphicsProject
             }
             CurrentState = NewState;
             ManageStatus();
-
         }
 
+        private void SelectFigure()
+        {
+            SelectedLayer = LayersList.SelectedIndex;
+            ChangeState(State.SELECTED);
+            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            {
+                FullUpdateCanvas();
+                Layers[SelectedLayer].DrawSelect();
+            }
+        }
+
+
+        #region Button events
         private void LineButton_Click(object sender, EventArgs e)
         {
             ChangeState(State.DRAW_LINE);
@@ -171,6 +185,7 @@ namespace GraphicsProject
                     Layers.RemoveAt(LayersList.SelectedIndex);
                     FullUpdateCanvas();
                     ChangeState(State.WAIT);
+                    CodeSelect = false;
                 }
                 catch (IndexOutOfRangeException) { }
             }
@@ -185,7 +200,9 @@ namespace GraphicsProject
             FullUpdateCanvas();
             LayersList.ClearSelected();
         }
+        #endregion
 
+        #region Canvas events
         private void CanvasBox_MouseDown(object sender, MouseEventArgs e)
         {
             switch (CurrentState)
@@ -254,7 +271,7 @@ namespace GraphicsProject
                     }
             }
         }
-
+        #endregion
 
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -270,24 +287,21 @@ namespace GraphicsProject
             Dispose();
         }
 
-
         private void LayersList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!CodeSelect)
             {
-                SelectedLayer = LayersList.SelectedIndex;
-                ChangeState(State.SELECTED);
-                if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
-                {
-                    FullUpdateCanvas();
-                    Layers[SelectedLayer].DrawSelect();
-                    CodeSelect = false;
-                }
+                SelectFigure();
+            } else {
+                CodeSelect = false;
             }
-            ChangeState(State.SELECTED);
+            
             //DrawRectangle on selected Layer.
         }
 
-
+        private void LayersList_MouseDown(object sender, MouseEventArgs e)
+        {
+            CodeSelect = false;
+        }
     }
 }
