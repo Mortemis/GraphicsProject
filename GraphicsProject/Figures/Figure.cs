@@ -122,9 +122,10 @@ namespace GraphicsProject.Figures
             C = MatrixUtils.MatrixMult(C, M);
         }
 
-        public List<PointF> GetNewPoints()
+        public virtual List<PointF> GetNewPoints()
         {
             var newPoints = new List<PointF>();
+            if (Points == null) return newPoints;
             int n = Points.Count - 1;
             for (int i = 0; i <= n; i++)
             {

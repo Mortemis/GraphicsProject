@@ -32,19 +32,16 @@ namespace GraphicsProject
         private IList<PointF> _points;
         private readonly ObservableCollection<Figure> _figures;
 
-        private IList<Figure> _selectedFigures;
+        private readonly IList<Figure> _selectedFigures;
         private bool _isDrawMode;
-        private bool _isMultiSelectMode;
 
-        private Figure _selectedFigure;
-        private Figure _secondSelectedFigure;
-        private bool _isFigureSelected;
 
         public MainForm()
         {
             InitializeComponent();
+            KeyPreview = true;
             CanvasWidth = CanvasBox.Width;
-            CanvasHeight = CanvasBox.Height;            
+            CanvasHeight = CanvasBox.Height;
 
             anglesCounter.Maximum = 20;
             anglesCounter.Minimum = 3;
@@ -83,6 +80,8 @@ namespace GraphicsProject
                     break;
             }
 
+            _selectedFigures.Clear();
+            RedrawAll();
             _isDrawMode = true;
         }
 
@@ -105,21 +104,16 @@ namespace GraphicsProject
                 case NamesUtils.Mirror:
                     _currentState = State.HorMirror;
                     break;
-                case NamesUtils.TmoUnion:                  
+                case NamesUtils.TmoUnion:
+                    _currentState = State.TmoUnion;
+                    break;
                 case NamesUtils.TmoIntersection:
                     _currentState = State.TmoIntersection;
-                    if (_selectedFigures?.Count > 1)
-                    {
-                        _figures.Add(new Tmo(_selectedFigures[0], _selectedFigures[1], _currentState));
-                        foreach (var selectedFigure in _selectedFigures)
-                        {
-                            _figures.Remove(selectedFigure);
-                        }
-                        RedrawAll();
-                    }
                     break;
             }
 
+            _selectedFigures.Clear();
+            RedrawAll();
             _isDrawMode = false;
         }
 
@@ -149,7 +143,11 @@ namespace GraphicsProject
                     case State.Pgn:
                         AddPoint(_lastLocation);
                         if (_points.Count == 2)
+                        {
                             _figures.Add(new Pgn(_points, (int) anglesCounter.Value));
+                            RedrawAll();
+                        }
+
                         break;
 
                     case State.CubicSpline:
@@ -162,6 +160,7 @@ namespace GraphicsProject
                             case 4:
                                 G.DrawLine(DrawPen, _points[2], _points[3]);
                                 _figures.Add(new CubicSpline(_points));
+                                RedrawAll();
                                 break;
                         }
 
@@ -172,18 +171,28 @@ namespace GraphicsProject
             // преобразование
             if (!_isDrawMode)
             {
-                // лкм - выделение одной фигуры
+                // лкм - выделение фигуры
                 if (e.Button == MouseButtons.Left)
                 {
-                    _selectedFigure =
+                    var selectedFigure =
                         _figures.FirstOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
-                    _isFigureSelected = _selectedFigure != null;
-                }
 
-                //ctrl + lcm = выделение двух фигур
-                if (e.Button == MouseButtons.Left)
-                {
-                    _selectedFigures.Add(_figures.First(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y)));
+                    if (selectedFigure != null)
+                    {
+                        if (_currentState == State.TmoUnion || _currentState == State.TmoIntersection)
+                        {
+                            _selectedFigures.Add(selectedFigure);
+                        }
+                        else
+                        {
+                            _selectedFigures.Clear();
+                            _selectedFigures.Add(selectedFigure);
+                        }
+                    }
+                    else _selectedFigures.Clear();
+
+                    RedrawAll();
+                    DrawBorders();
                 }
 
                 // задание центра для поворота,линии для отражения,перемещение - пкм
@@ -191,23 +200,38 @@ namespace GraphicsProject
                 {
                     switch (_currentState)
                     {
-                        case State.Move:
-                            _selectedFigure =
-                                _figures.FirstOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
-                            _isFigureSelected = _selectedFigure != null;
-                            break;
-
                         case State.Rotate:
-                            _selectedFigure?.Rotate(_lastLocation, (int) angleRotate.Value);
+                            _selectedFigures.FirstOrDefault()?.Rotate(_lastLocation, (int) angleRotate.Value);
+                            RedrawAll();
                             break;
 
                         case State.HorMirror:
                             AddPoint(_lastLocation);
                             if (_points.Count == 2)
                             {
-                                _selectedFigure?.Mirror(_points[0], _points[1]);
+                                _selectedFigures.FirstOrDefault()?.Mirror(_points[0], _points[1]);
                                 new Line(_points);
                                 _points = new List<PointF>();
+                                RedrawAll();
+                            }
+
+                            break;
+                        case State.TmoUnion:
+                        case State.TmoIntersection:
+                            if (_selectedFigures?.Count > 1)
+                            {
+                                var tmo = new Tmo(_selectedFigures[0], _selectedFigures[1], _currentState);
+                                _figures.Add(tmo);
+                                tmo.Draw();
+
+                                foreach (var selectedFigure in _selectedFigures)
+                                    _figures.Remove(selectedFigure);
+
+                                _selectedFigures.Clear();
+                                _selectedFigures.Add(tmo);
+
+                                DrawBorders();
+                                RedrawAll();
                             }
 
                             break;
@@ -215,32 +239,21 @@ namespace GraphicsProject
                 }
             }
 
-            RedrawAll();
+            CanvasBox.Image = _bitmap;
         }
 
         private void CanvasBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isFigureSelected) return;
+            if (_selectedFigures.Count == 0) return;
             switch (_currentState)
             {
                 case State.Move:
-                    _selectedFigure?.Move(e.X - _lastLocation.X, e.Y - _lastLocation.Y);
-                    G.Clear(CanvasBox.BackColor);
-                    foreach (var figure in _figures)
-                        figure.Draw();
-
-
+                    _selectedFigures.FirstOrDefault()?.Move(e.X - _lastLocation.X, e.Y - _lastLocation.Y);
+                    RedrawAll();
                     break;
             }
 
             _lastLocation = e.Location;
-            CanvasBox.Image = _bitmap;
-        }
-
-
-        private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            _isFigureSelected = false;
         }
 
         #endregion
@@ -269,21 +282,59 @@ namespace GraphicsProject
                 figure.Draw();
             }
 
+            DrawBorders();
             CanvasBox.Image = _bitmap;
         }
 
-        #endregion
-
         private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control)
-                _isMultiSelectMode = true;
+            // _isMultiSelectMode = true;
         }
 
         private void MainForm_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Control)
-                _isMultiSelectMode = false;
+            // _isMultiSelectMode = false;
+        }
+
+
+        private void DrawBorders()
+        {
+            foreach (var figure in _selectedFigures)
+            {
+                var points = figure.GetNewPoints();
+                if(points==null) return;
+                if (figure is Polygon)
+                {
+                    var leftX = points.Min(point => point.X);
+                    var rightX = points.Max(point => point.X);
+                    var upY = points.Min(point => point.Y);
+                    var downY = points.Max(point => point.Y);
+
+                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, upY, rightX, upY);
+                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, rightX, downY);
+
+                    G.DrawLine(DrawPenUtils.DrawPenGreen, rightX, downY, rightX, upY);
+                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, leftX, upY);
+                }
+
+                if (figure is Tmo)
+                {
+                    var borderPoints = (figure as Tmo).GetBorderPoints();
+
+                    G.DrawLine(DrawPenUtils.DrawPenGreen,borderPoints[0],borderPoints[1]);
+                    G.DrawLine(DrawPenUtils.DrawPenGreen,borderPoints[1],borderPoints[2]);
+                    G.DrawLine(DrawPenUtils.DrawPenGreen,borderPoints[2],borderPoints[3]);
+                    G.DrawLine(DrawPenUtils.DrawPenGreen,borderPoints[3],borderPoints[0]);
+                }
+            }
+        }
+
+        #endregion
+
+        private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_currentState == State.Move)
+                _selectedFigures.Clear();
         }
     }
 }

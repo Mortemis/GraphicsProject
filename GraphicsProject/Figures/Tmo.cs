@@ -12,16 +12,32 @@ namespace GraphicsProject.Figures
         Figure f1;
         Figure f2;
         private State _tmoType;
+        private double _downY;
+        private double _upY;
+        private double _rightX;
+        private double _leftX;
 
         public Tmo(Figure fig1, Figure fig2, State tmoType)
         {
             f1 = fig1;
             f2 = fig2;
-            _tmoType = tmoType;
+            _tmoType = tmoType;          
+        }
+
+        public IList<PointF> GetBorderPoints()
+        {
+            return Points;
         }
 
         public override void Draw()
         {
+
+            _upY = 0;
+            _downY = MainForm.CanvasHeight;
+
+            _leftX = MainForm.CanvasWidth;
+            _rightX = 0;
+
             List<PointF> l1 = f1.GetNewPoints();
             List<PointF> l2 = f2.GetNewPoints();
 
@@ -52,6 +68,9 @@ namespace GraphicsProject.Figures
             if (Ymax > MainForm.CanvasHeight)
                 Ymax = MainForm.CanvasHeight;
 
+            _downY = Ymin;
+            _upY = Ymax;
+
             //для У в границах многоугольника
             for (int Y = Ymin; Y < Ymax; Y++)
             {
@@ -64,6 +83,13 @@ namespace GraphicsProject.Figures
                 if (Xa.Count() != 0 || Xb.Count() != 0)
                     drawTMO(Xa, Xb, Y);
             }
+
+            Points = new List<PointF>();
+            Points.Add(new PointF((float) _leftX,(float) _upY));
+            Points.Add(new PointF((float)_rightX, (float)_upY));                        
+            Points.Add(new PointF((float) _rightX,(float) _downY));
+            Points.Add(new PointF((float) _leftX, (float) _downY));
+
         }
 
         //пересечение фигуры со строкой У
@@ -182,11 +208,21 @@ namespace GraphicsProject.Figures
             }
 
             if (belong(Q, setQ))
-                Xrr.Add(854);
+                Xrr.Add(MainForm.CanvasWidth);
+
             //рисуем линию
             for (int i = 0; i < Xrl.Count(); i++)
             {
                 G.DrawLine(DrawPen, (int) Xrl[i] + 1, y, (int) Xrr[i], y);
+
+                if (_downY < y)
+                    _downY = y;
+                if (_rightX < Xrr[Xrr.Count - 1])
+                    _rightX = (float)Xrr[Xrr.Count - 1];
+                if (_upY > y)
+                    _upY = y;
+                if (_leftX > Xrl[0])
+                    _leftX = (float)Xrl[0];
             }
         }
 
