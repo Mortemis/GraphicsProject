@@ -82,7 +82,7 @@ namespace GraphicsProject.Figures
             return check;
         }*/
 
-        public void ApplyTransformations()
+        public List<Point> ApplyTransformations()
         {
             var NewPoints = new List<Point>();
             int n = Points.Count - 1;
@@ -91,8 +91,8 @@ namespace GraphicsProject.Figures
                 double[,] C0 = { { Points[i].X, Points[i].Y, 1 } };
                 var temp = MathUtils.MultiplyMatrices(C0, C);
                 NewPoints.Add(new Point((int)temp[0, 0], (int)temp[0, 1]));
-            }
-            Points = NewPoints;
+            }            
+            return NewPoints;
         }
 
         public void Rotate(Point center, double Angle)

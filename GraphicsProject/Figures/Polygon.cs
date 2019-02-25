@@ -10,6 +10,7 @@ namespace GraphicsProject.Figures
 
         public void Fill()
         {
+            var Points = ApplyTransformations();
             int yMin;
             int yMax;
             yMin = Points[0].Y;
@@ -72,7 +73,7 @@ namespace GraphicsProject.Figures
 
         public override void Draw()
         {
-            ApplyTransformations();
+            var Points = ApplyTransformations();
             for (int i = 0; i < Points.Count-1; i++)
             {
                 Line.Draw(Points[i], Points[i + 1]);
