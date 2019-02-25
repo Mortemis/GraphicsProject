@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Expander;
 using GraphicsProject.Figures;
+using GraphicsProject.Utils;
 
 
 namespace GraphicsProject
@@ -21,15 +22,20 @@ namespace GraphicsProject
         public static int CanvasWidth;
         public static int CanvasHeight;
 
-        public static Pen DrawPen = new Pen(Color.Black, 1);
+        public static Pen DrawPen = DrawPenUtils.DrawPenBlack;
         private readonly Bitmap _bitmap;
 
         private State _currentState;
 
-        private Point _lastLocation;        
+        private Point _lastLocation;
 
-        private List<PointF> _points;
+        private IList<PointF> _points;
         private readonly ObservableCollection<Figure> _figures;
+
+        private IList<Figure> _selectedFigures;
+        private bool _isDrawMode;
+        private bool _isMultiSelectMode;
+
         private Figure _selectedFigure;
         private Figure _secondSelectedFigure;
         private bool _isFigureSelected;
@@ -38,8 +44,7 @@ namespace GraphicsProject
         {
             InitializeComponent();
             CanvasWidth = CanvasBox.Width;
-            CanvasHeight = CanvasBox.Height;
-            _currentState = State.Wait;
+            CanvasHeight = CanvasBox.Height;            
 
             anglesCounter.Maximum = 20;
             anglesCounter.Minimum = 3;
@@ -47,56 +52,76 @@ namespace GraphicsProject
             _bitmap = new Bitmap(CanvasWidth, CanvasHeight);
             G = Graphics.FromImage(_bitmap);
 
+            _selectedFigures = new List<Figure>();
             _points = new List<PointF>();
             _figures = new ObservableCollection<Figure>();
             _figures.CollectionChanged += (sender, args) =>
             {
-                if (args.NewItems.Count != 0) _points = new List<PointF>();
+                if (args.NewItems?.Count != 0) _points = new List<PointF>();
             };
         }
 
         #region Choose primitive
 
-        private void btnLine_Click(object sender, EventArgs e)
+        private void ChoosePrimitive(object sender, EventArgs e)
         {
-            _currentState = State.DrawLine;
-        }
+            var button = sender as Button;
+            var text = button?.Text;
+            switch (text)
+            {
+                case NamesUtils.Line:
+                    _currentState = State.DrawLine;
+                    break;
+                case NamesUtils.CubicSpline:
+                    _currentState = State.CubicSpline;
+                    break;
+                case NamesUtils.Pgn:
+                    _currentState = State.Pgn;
+                    break;
+                case NamesUtils.Tgp:
+                    _currentState = State.Tgp;
+                    break;
+            }
 
-        private void btnTgp_Click(object sender, EventArgs e)
-        {
-            _currentState = State.Tgp;
-        }
-
-        private void btnCubicSpline_Click(object sender, EventArgs e)
-        {
-            _currentState = State.CubicSpline;
-        }
-
-        private void btnPgn_Click(object sender, EventArgs e)
-        {
-            _currentState = State.Pgn;
+            _isDrawMode = true;
         }
 
         #endregion
 
         #region Choose operation
 
-        private void btnMove_Click(object sender, EventArgs e)
+        private void ChooseOperation(object sender, EventArgs e)
         {
-            _currentState = State.Move;
+            var button = sender as Button;
+            var text = button?.Text;
+            switch (text)
+            {
+                case NamesUtils.Move:
+                    _currentState = State.Move;
+                    break;
+                case NamesUtils.Rotate:
+                    _currentState = State.Rotate;
+                    break;
+                case NamesUtils.Mirror:
+                    _currentState = State.HorMirror;
+                    break;
+                case NamesUtils.TmoUnion:                  
+                case NamesUtils.TmoIntersection:
+                    _currentState = State.TmoIntersection;
+                    if (_selectedFigures?.Count > 1)
+                    {
+                        _figures.Add(new Tmo(_selectedFigures[0], _selectedFigures[1], _currentState));
+                        foreach (var selectedFigure in _selectedFigures)
+                        {
+                            _figures.Remove(selectedFigure);
+                        }
+                        RedrawAll();
+                    }
+                    break;
+            }
+
+            _isDrawMode = false;
         }
-
-        private void btnRotate_Click(object sender, EventArgs e)
-        {
-            _currentState = State.Rotate;
-        }
-
-        private void btnMirror_Click(object sender, EventArgs e)
-        {
-            _currentState = State.HorMirror;
-        }
-
-
 
         #endregion
 
@@ -106,107 +131,105 @@ namespace GraphicsProject
         {
             _lastLocation = e.Location;
 
-            switch (_currentState)
+            // рисуем фигуры
+            if (_isDrawMode)
             {
-                case State.DrawLine:
-                    AddPoint(_lastLocation);
-                    if (_points.Count == 2)
-                        _figures.Add(new Line(_points));
-                    break;
-
-                case State.Tgp:
-                    _figures.Add(new Tgp(_lastLocation));
-                    break;
-
-                case State.Pgn:
-                    AddPoint(_lastLocation);
-                    if (_points.Count == 2)
-                        _figures.Add(new Pgn(_points, (int) anglesCounter.Value));
-                    break;
-
-                case State.CubicSpline:
-                    AddPoint(_lastLocation);
-                    switch (_points.Count)
-                    {
-                        case 2:
-                            G.DrawLine(DrawPen, _points[0], _points[1]);
-                            break;
-                        case 4:
-                            G.DrawLine(DrawPen, _points[2], _points[3]);
-                            _figures.Add(new CubicSpline(_points));
-                            break;
-                    }
-
-                    break;
-
-                case State.Move:
-                    _selectedFigure = _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
-                    _isFigureSelected = _selectedFigure != null;
-                    break;
-
-                case State.Rotate:
-                     _selectedFigure = _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
-                    _isFigureSelected = _selectedFigure != null;
-                     if ((e.Button & MouseButtons.Right) != 0)
-                     {
-                         _selectedFigure?.Rotate(_lastLocation, (int) angleRotate.Value);
-                         G.Clear(CanvasBox.BackColor);
-                         foreach (var figure in _figures)
-                             figure?.Draw();
-                     }
-
-                     break;
-
-                case State.HorMirror:
-                    if ((e.Button & MouseButtons.Left) != 0)
-                    {
-                        _selectedFigure =
-                            _figures.SingleOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
-                        _isFigureSelected = _selectedFigure != null;
-
-                    }
-
-                    if ((e.Button & MouseButtons.Right) != 0)
-                    {
+                switch (_currentState)
+                {
+                    case State.DrawLine:
                         AddPoint(_lastLocation);
                         if (_points.Count == 2)
+                            _figures.Add(new Line(_points));
+                        break;
+
+                    case State.Tgp:
+                        _figures.Add(new Tgp(_lastLocation));
+                        break;
+
+                    case State.Pgn:
+                        AddPoint(_lastLocation);
+                        if (_points.Count == 2)
+                            _figures.Add(new Pgn(_points, (int) anglesCounter.Value));
+                        break;
+
+                    case State.CubicSpline:
+                        AddPoint(_lastLocation);
+                        switch (_points.Count)
                         {
-                            _selectedFigure?.Mirror(_points[0],_points[1]);
-                            new Line(_points);
-                            _points = new List<PointF>();
+                            case 2:
+                                G.DrawLine(DrawPen, _points[0], _points[1]);
+                                break;
+                            case 4:
+                                G.DrawLine(DrawPen, _points[2], _points[3]);
+                                _figures.Add(new CubicSpline(_points));
+                                break;
                         }
 
-                        G.Clear(CanvasBox.BackColor);
-                        foreach (var figure in _figures)
-                            figure?.Draw();
-                    }
-                   
-                    break;
-
-                case State.TmoUnion:
-                case State.TmoIntersection:
-                    _figures.Add(new Tmo(_selectedFigure,_secondSelectedFigure,_currentState));
-                    G.Clear(CanvasBox.BackColor);
-                    _figures[2].Draw();
-                    break;
+                        break;
+                }
             }
 
-            CanvasBox.Image = _bitmap;
+            // преобразование
+            if (!_isDrawMode)
+            {
+                // лкм - выделение одной фигуры
+                if (e.Button == MouseButtons.Left)
+                {
+                    _selectedFigure =
+                        _figures.FirstOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
+                    _isFigureSelected = _selectedFigure != null;
+                }
+
+                //ctrl + lcm = выделение двух фигур
+                if (e.Button == MouseButtons.Left)
+                {
+                    _selectedFigures.Add(_figures.First(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y)));
+                }
+
+                // задание центра для поворота,линии для отражения,перемещение - пкм
+                if (e.Button == MouseButtons.Right)
+                {
+                    switch (_currentState)
+                    {
+                        case State.Move:
+                            _selectedFigure =
+                                _figures.FirstOrDefault(fig => fig.IsSelected(_lastLocation.X, _lastLocation.Y));
+                            _isFigureSelected = _selectedFigure != null;
+                            break;
+
+                        case State.Rotate:
+                            _selectedFigure?.Rotate(_lastLocation, (int) angleRotate.Value);
+                            break;
+
+                        case State.HorMirror:
+                            AddPoint(_lastLocation);
+                            if (_points.Count == 2)
+                            {
+                                _selectedFigure?.Mirror(_points[0], _points[1]);
+                                new Line(_points);
+                                _points = new List<PointF>();
+                            }
+
+                            break;
+                    }
+                }
+            }
+
+            RedrawAll();
         }
 
         private void CanvasBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if(!_isFigureSelected) return;
+            if (!_isFigureSelected) return;
             switch (_currentState)
             {
                 case State.Move:
-                    _selectedFigure?.Move(e.X - _lastLocation.X,e.Y - _lastLocation.Y);
+                    _selectedFigure?.Move(e.X - _lastLocation.X, e.Y - _lastLocation.Y);
                     G.Clear(CanvasBox.BackColor);
-                    foreach (var figure in _figures)                    
-                       figure.Draw();
-                    
+                    foreach (var figure in _figures)
+                        figure.Draw();
 
-                    
+
                     break;
             }
 
@@ -222,7 +245,7 @@ namespace GraphicsProject
 
         #endregion
 
-        #region Private utils(ne dlya udobvstva)
+        #region Private utils
 
         private void AddPoint(PointF point)
         {
@@ -230,22 +253,37 @@ namespace GraphicsProject
             _points.Add(point);
         }
 
+        private void ClearCanvas()
+        {
+            G.Clear(CanvasBox.BackColor);
+            _figures.Clear();
+            _points.Clear();
+            CanvasBox.Image = _bitmap;
+        }
 
+        private void RedrawAll()
+        {
+            G.Clear(CanvasBox.BackColor);
+            foreach (var figure in _figures)
+            {
+                figure.Draw();
+            }
 
-
+            CanvasBox.Image = _bitmap;
+        }
 
         #endregion
 
-        private void btnTmoUnion_Click(object sender, EventArgs e)
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            _currentState = State.TmoUnion;
-            _selectedFigure = _figures[0];
-            _secondSelectedFigure = _figures[1];
+            if (e.Control)
+                _isMultiSelectMode = true;
         }
 
-        private void btnTmoIntersection_Click(object sender, EventArgs e)
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
         {
-            _currentState = State.TmoIntersection;
+            if (e.Control)
+                _isMultiSelectMode = false;
         }
     }
 }

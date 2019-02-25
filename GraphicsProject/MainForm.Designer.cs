@@ -145,7 +145,7 @@
             this.btnLine.TabIndex = 1;
             this.btnLine.Text = "Линия";
             this.btnLine.UseVisualStyleBackColor = false;
-            this.btnLine.Click += new System.EventHandler(this.btnLine_Click);
+            this.btnLine.Click += new System.EventHandler(this.ChoosePrimitive);
             // 
             // btnTgp
             // 
@@ -160,7 +160,7 @@
             this.btnTgp.TabIndex = 2;
             this.btnTgp.Text = "Прямоугольный треугольник";
             this.btnTgp.UseVisualStyleBackColor = false;
-            this.btnTgp.Click += new System.EventHandler(this.btnTgp_Click);
+            this.btnTgp.Click += new System.EventHandler(this.ChoosePrimitive);
             // 
             // btnCubicSpline
             // 
@@ -174,7 +174,7 @@
             this.btnCubicSpline.TabIndex = 3;
             this.btnCubicSpline.Text = "Кривая Эрмита";
             this.btnCubicSpline.UseVisualStyleBackColor = false;
-            this.btnCubicSpline.Click += new System.EventHandler(this.btnCubicSpline_Click);
+            this.btnCubicSpline.Click += new System.EventHandler(this.ChoosePrimitive);
             // 
             // btnPgn
             // 
@@ -188,7 +188,7 @@
             this.btnPgn.TabIndex = 4;
             this.btnPgn.Text = "Правильный n-угольник";
             this.btnPgn.UseVisualStyleBackColor = false;
-            this.btnPgn.Click += new System.EventHandler(this.btnPgn_Click);
+            this.btnPgn.Click += new System.EventHandler(this.ChoosePrimitive);
             // 
             // panel2
             // 
@@ -280,7 +280,7 @@
             this.btnMove.TabIndex = 1;
             this.btnMove.Text = "Перемещение";
             this.btnMove.UseVisualStyleBackColor = false;
-            this.btnMove.Click += new System.EventHandler(this.btnMove_Click);
+            this.btnMove.Click += new System.EventHandler(this.ChooseOperation);
             // 
             // btnMirror
             // 
@@ -295,7 +295,7 @@
             this.btnMirror.TabIndex = 2;
             this.btnMirror.Text = "Отражение относительно прямой";
             this.btnMirror.UseVisualStyleBackColor = false;
-            this.btnMirror.Click += new System.EventHandler(this.btnMirror_Click);
+            this.btnMirror.Click += new System.EventHandler(this.ChooseOperation);
             // 
             // btnRotate
             // 
@@ -310,7 +310,7 @@
             this.btnRotate.TabIndex = 7;
             this.btnRotate.Text = "Поворот";
             this.btnRotate.UseVisualStyleBackColor = false;
-            this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
+            this.btnRotate.Click += new System.EventHandler(this.ChooseOperation);
             // 
             // panel3
             // 
@@ -521,7 +521,7 @@
             this.btnTmoUnion.TabIndex = 1;
             this.btnTmoUnion.Text = "Объединение";
             this.btnTmoUnion.UseVisualStyleBackColor = false;
-            this.btnTmoUnion.Click += new System.EventHandler(this.btnTmoUnion_Click);
+            this.btnTmoUnion.Click += new System.EventHandler(this.ChooseOperation);
             // 
             // btnTmoIntersection
             // 
@@ -536,7 +536,7 @@
             this.btnTmoIntersection.TabIndex = 2;
             this.btnTmoIntersection.Text = "Пересечение";
             this.btnTmoIntersection.UseVisualStyleBackColor = false;
-            this.btnTmoIntersection.Click += new System.EventHandler(this.btnTmoIntersection_Click);
+            this.btnTmoIntersection.Click += new System.EventHandler(this.ChooseOperation);
             // 
             // panel6
             // 
@@ -567,6 +567,8 @@
             this.Controls.Add(this.CanvasBox);
             this.Name = "MainForm";
             this.Text = "Course Project";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
