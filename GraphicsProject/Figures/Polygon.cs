@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -12,55 +14,46 @@ namespace GraphicsProject.Figures
 
         protected Polygon(IList<PointF> points) : base(points)
         {
-
         }
 
         protected Polygon()
         {
-            
         }
 
         public override void Draw()
         {
-            var Points = GetNewPoints();
-            int n = Points.Count - 1;
+            var newPoints = GetNewPoints();
+            int n = newPoints.Count - 1;
+
+            var upperAndLowerBorder = BordersUtils.GetUpperAndLowerBorderTuple(newPoints);
+
             //ищем максимальные и минимальные значения по У
-            int Ymin = (int) Math.Round(Points[0].Y);
-            int Ymax = Ymin, Y = 0;
-            for (int i = 0; i < n; i++)
-            {
-                var y = (int) Math.Round(Points[i].Y);
-                if (y < Ymin) Ymin = y;
-                if (y > Ymax) Ymax = y;
-            }
+            int ymin = upperAndLowerBorder.Item1;
+            int ymax = upperAndLowerBorder.Item2;
 
-            if (Ymin < 0)
-                Ymin = 0;
-            if (Ymax > MainForm.CanvasHeight)
-                Ymax = MainForm.CanvasHeight;
-            List<double> Xb = new List<double>();
-            double x;
+            var xb = new List<double>();
 
-            for (Y = Ymin; Y <= Ymax; Y++)
+            for (var y = ymin; y <= ymax; y++)
             {
-                Xb.Clear();
+                xb.Clear();
                 for (int i = 0; i < n; i++)
                 {
-                    if ((Points[i].Y < Y) & (Points[i + 1].Y >= Y) | (Points[i].Y >= Y) & (Points[i + 1].Y < Y))
+                    if ((newPoints[i].Y < y) & (newPoints[i + 1].Y >= y) ||
+                        (newPoints[i].Y >= y) & (newPoints[i + 1].Y < y))
                     {
-                        x = (Y - Points[i].Y) * (Points[i + 1].X - Points[i].X) / (Points[i + 1].Y - Points[i].Y) +
-                            Points[i].X;
-                        Xb.Add(x);
+                        double x = (y - newPoints[i].Y) * (newPoints[i + 1].X - newPoints[i].X) /
+                                   (newPoints[i + 1].Y - newPoints[i].Y) +
+                                   newPoints[i].X;
+                        xb.Add(x);
                     }
                 }
 
-                Xb.Sort();
-                for (int i = 0; i < Xb.Count; i = i + 2)
+                xb.Sort();
+                for (int i = 0; i < xb.Count; i = i + 2)
                 {
-                    G.DrawLine(DrawPen, (int) (Xb[i] + 1), Y, (int) (Xb[i + 1]), Y);
+                    G.DrawLine(DrawPen, (int) (xb[i] + 1), y, (int) (xb[i + 1]), y);
                 }
             }
-            
         }
     }
 }

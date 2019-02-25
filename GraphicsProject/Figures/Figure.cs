@@ -30,96 +30,69 @@ namespace GraphicsProject.Figures
             Draw();
         }
 
-        public virtual void Rotate(PointF p, double angle)
+        public abstract void Draw();
+
+        public virtual IList<PointF> GetBorderPoints()
         {
-            var angleRad = angle * Math.PI / 180D;
-            double cosf = Math.Cos(angleRad);
-            double sinf = Math.Sin(angleRad);
+            var points = GetNewPoints();
 
-            double[,] M = {{1, 0, 0}, {0, 1, 0}, {-p.X, -p.Y, 1}};
-            double[,] MObr = {{1, 0, 0}, {0, 1, 0}, {p.X, p.Y, 1}};
-            double[,] R = {{cosf, -sinf, 0}, {sinf, cosf, 0}, {0, 0, 1}};
+            var leftX = points.Min(point => point.X) - 2;
+            var rightX = points.Max(point => point.X) + 2;
+            var upY = points.Min(point => point.Y) - 2;
+            var downY = points.Max(point => point.Y) + 2;
 
-            C = MatrixUtils.MatrixMult(C, MatrixUtils.MatrixMult(M, MatrixUtils.MatrixMult(R, MObr)));
+            G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, upY, rightX, upY);
+            G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, rightX, downY);
+
+            G.DrawLine(DrawPenUtils.DrawPenGreen, rightX, downY, rightX, upY);
+            G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, leftX, upY);
+
+            return new List<PointF>
+            {
+                new PointF(leftX,upY),
+                new PointF(rightX,upY),
+                new PointF(rightX,downY),
+                new PointF(leftX,downY),
+            };
         }
 
-        public virtual void Mirror(PointF a, PointF b)
-        {
-            PointF o = new PointF(b.X, a.Y);
-            double ax = b.X - a.X;
-            double ay = b.Y - a.Y;
-            double bx = o.X - a.X;
-            //(ax * bx + ay * by) / (Math.Sqrt(ax * ax + ay * ay) * Math.Sqrt(bx * bx + by * by)) но by=0, так что упрощаем
-            double cosf = (ax * bx) / (Math.Sqrt(ax * ax + ay * ay) * Math.Sqrt(bx * bx));
-            double sinf = Math.Sqrt(1 - cosf * cosf);
-
-            if ((ax * ay) > 0) sinf = -sinf;
-            PointF c = new PointF((b.X - a.X) / 2 + a.X, (b.Y - a.Y) / 2 + a.Y);
-
-            double[,] M = {{1, 0, 0}, {0, 1, 0}, {-c.X, -c.Y, 1}};
-            double[,] MObr = {{1, 0, 0}, {0, 1, 0}, {c.X, c.Y, 1}};
-            double[,] S = {{1, 0, 0}, {0, -1, 0}, {0, 0, 1}};
-            double[,] R = {{cosf, sinf, 0}, {-sinf, cosf, 0}, {0, 0, 1}};
-            double[,] RObr = {{cosf, -sinf, 0}, {sinf, cosf, 0}, {0, 0, 1}};
-
-            C = MatrixUtils.MatrixMult(C,
-                MatrixUtils.MatrixMult(M,
-                    MatrixUtils.MatrixMult(R, 
-                        MatrixUtils.MatrixMult(S, 
-                            MatrixUtils.MatrixMult(RObr, MObr)))));
-        }
-
-        // выделение многоугольника
         public virtual bool IsSelected(int mX, int mY)
         {
-            var Points = GetNewPoints();
-            int n = Points.Count() - 1, k = 0;
-            PointF Pi, Pk; //принимает дискретные пиксели и рисует в режиме сглаживания
+            var newPoints = GetNewPoints();
+            int n = newPoints.Count() - 1;
             double x;
-            List<int> Xb = new List<int>(); //буфер сегментов
-            bool check = false;
+            var xb = new List<int>(); //буфер сегментов
+            bool isSelected = false;
 
-            Xb.Clear();
+            xb.Clear();
             for (int i = 0; i <= n; i++)
             {
+                int k;
                 if (i < n) k = i + 1;
                 else k = 0;
-                Pi = Points[i];
-                Pk = Points[k];
-                if ((Pi.Y < mY) & (Pk.Y >= mY) | (Pi.Y >= mY) & (Pk.Y < mY))
+                var pi = newPoints[i];
+                var pk = newPoints[k];
+                if ((pi.Y < mY) & (pk.Y >= mY) | (pi.Y >= mY) & (pk.Y < mY))
                 {
-                    x = (mY - Pi.Y) * (Pk.X - Pi.X) / (Pk.Y - Pi.Y) + Pi.X;
-                    Xb.Add((int) Math.Round(x));
+                    x = (mY - pi.Y) * (pk.X - pi.X) / (pk.Y - pi.Y) + pi.X;
+                    xb.Add((int) Math.Round(x));
                 }
             }
 
-            if (Xb.Any())
+            if (xb.Any())
             {
-                Xb.Sort();
-                for (int i = 0; i < Xb.Count; i = i + 2)
+                xb.Sort();
+                for (int i = 0; i < xb.Count; i = i + 2)
                 {
-                    if (mX >= Xb[i] & mX <= Xb[i + 1])
+                    if (mX >= xb[i] & mX <= xb[i + 1])
                     {
-                        check = true;
+                        isSelected = true;
                         break;
                     }
                 }
             }
 
-            return check;
-        }
-
-        public virtual void Move(int dx, int dy)
-        {
-            //матрица движения
-            double[,] M =
-            {
-                {1, 0, 0},
-                {0, 1, 0},
-                {dx, dy, 1}
-            };
-
-            C = MatrixUtils.MatrixMult(C, M);
+            return isSelected;
         }
 
         public virtual List<PointF> GetNewPoints()
@@ -129,15 +102,82 @@ namespace GraphicsProject.Figures
             int n = Points.Count - 1;
             for (int i = 0; i <= n; i++)
             {
-                double[,] C0 = {{Points[i].X, Points[i].Y, 1}};
-                var temp = MatrixUtils.MatrixMult(C0, C);
+                double[,] c0 = {{Points[i].X, Points[i].Y, 1}};
+                var temp = MatrixUtils.MatrixMult(c0, C);
                 newPoints.Add(new PointF((float) temp[0, 0], (float) temp[0, 1]));
             }
 
             return newPoints;
         }
 
-        public abstract void Draw();
+        public virtual void Move(int dx, int dy)
+        {
+            //матрица движения
+            double[,] m =
+            {
+                {1, 0, 0},
+                {0, 1, 0},
+                {dx, dy, 1}
+            };
+
+            C = MatrixUtils.MatrixMult(C, m);
+        }
+
+        public virtual void Rotate(PointF p, double angle)
+        {
+            var angleRad = angle * Math.PI / 180D;
+            double cosf = Math.Cos(angleRad);
+            double sinf = Math.Sin(angleRad);
+
+            double[,] m = {{1, 0, 0}, {0, 1, 0}, {-p.X, -p.Y, 1}};
+            double[,] mObr = {{1, 0, 0}, {0, 1, 0}, {p.X, p.Y, 1}};
+            double[,] r = {{cosf, -sinf, 0}, {sinf, cosf, 0}, {0, 0, 1}};
+
+            C = MatrixUtils.MatrixMult(C, MatrixUtils.MatrixMult(m, MatrixUtils.MatrixMult(r, mObr)));
+        }
+
+        public virtual void Mirror(Point a, State state)
+        {
+            switch (state)
+            {
+                case State.HorMirror:
+                    HorMirror(a);
+                    break;
+                case State.VertMirror:
+                    VertMirror(a);
+                    break;
+            }
+        }
+
+        public virtual void VertMirror(PointF a)
+        {
+            Move(-(int) (a.X), 0);
+
+            double[,] m =
+            {
+                {-1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 1}
+            };
+
+            C = MatrixUtils.MatrixMult(C, m);
+            Move((int) (a.X), 0);
+        }
+
+        public virtual void HorMirror(PointF a)
+        {
+            Move(0, -(int) a.Y);
+
+            double[,] m =
+            {
+                {1, 0, 0},
+                {0, -1, 0},
+                {0, 0, 1}
+            };
+
+            C = MatrixUtils.MatrixMult(C, m);
+            Move(0, (int) a.Y);
+        }
 
         public static void PutPoint(PointF position)
         {

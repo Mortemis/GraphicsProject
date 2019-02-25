@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Figures\CubicSpline.cs" />
+    <Compile Include="Figures\ErLine.cs" />
     <Compile Include="Figures\Figure.cs" />
     <Compile Include="Figures\Line.cs" />
     <Compile Include="Figures\Pgn.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="Utils\FactorialUtils.cs" />
     <Compile Include="Utils\MatrixUtils.cs" />
     <Compile Include="Utils\NamesUtils.cs" />
+    <Compile Include="Utils\BordersUtils.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

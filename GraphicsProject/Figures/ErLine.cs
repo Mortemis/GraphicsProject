@@ -4,14 +4,22 @@ using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
-    public class CubicSpline : Figure
+    public class ErLine : Figure
     {
-        public CubicSpline(IList<PointF> points) : base(points)
+        public ErLine(IList<PointF> points) : base(points)
         {
             var ermitPoints = new List<PointF>();
-            double[,] Mh = {{2, -2, 1, 1}, {-3, 3, -2, -1}, {0, 0, 1, 0}, {1, 0, 0, 0}}; //Эрмитовая матрицa
-            var L = new double[4, 2]; // матрица неизвестных коэффициентов
-            var dt = 0.001; //шаг табуляции
+
+            //Эрмитовая матрицa
+            double[,] mh =
+            {
+                {2, -2, 1, 1}, 
+                {-3, 3, -2, -1},
+                {0, 0, 1, 0},
+                {1, 0, 0, 0}
+            }; 
+            var l = new double[4, 2]; // матрица неизвестных коэффициентов
+            const double dt = 0.001; //шаг табуляции
             double t = 0;
             double xT1 = Points[0].X; // координата х начала первого вектора
             double yT1 = Points[0].Y; // координата у начала первого вектора
@@ -23,30 +31,30 @@ namespace GraphicsProject.Figures
             double x2 = Points[3].X - Points[2].X; //проекция второго вектора на ось ох
             double y2 = Points[3].Y - Points[2].Y; //проекция второго вектора на ось оу
 
-            double[,] Gh = {{xT1, yT1}, {xT2, yT2}, {x1, y1}, {x2, y2}}; //матрица начальных условий
+            //матрица начальных условий
+            double[,] gh =
+            {
+                {xT1, yT1},
+                {xT2, yT2},
+                {x1, y1},
+                {x2, y2}
+            }; 
 
+            l = MatrixUtils.MatrixMult(mh, gh);
 
-            var row = Mh.GetLength(0);
-            var col = Gh.GetLength(1);
-            var inner = Gh.GetLength(0);
-
-            L = MatrixUtils.MatrixMult(Mh, Gh);
-
-            double Ptx = 0;
-            double Pty = 0;
             double xPred = Points[0].X;
             double yPred = Points[0].Y;
 
             while (t < 1 + dt / 2)
             {
-                Ptx = L[0, 0] * t * t * t + L[1, 0] * t * t + L[2, 0] * t + L[3, 0];
-                Pty = L[0, 1] * t * t * t + L[1, 1] * t * t + L[2, 1] * t + L[3, 1];
+                var ptx = l[0, 0] * t * t * t + l[1, 0] * t * t + l[2, 0] * t + l[3, 0];
+                var pty = l[0, 1] * t * t * t + l[1, 1] * t * t + l[2, 1] * t + l[3, 1];
 
-                ermitPoints.Add(new PointF((float) Ptx, (float) Pty));
-                G.DrawLine(DrawPen, (int) xPred, (int) yPred, (int) Ptx, (int) Pty);
+                ermitPoints.Add(new PointF((float) ptx, (float) pty));
+                G.DrawLine(DrawPen, (int) xPred, (int) yPred, (int) ptx, (int) pty);
                 t = t + dt;
-                xPred = Ptx;
-                yPred = Pty;
+                xPred = ptx;
+                yPred = pty;
                 ermitPoints.Add(new PointF((float) xPred, (float) yPred));
             }
 
@@ -56,7 +64,7 @@ namespace GraphicsProject.Figures
         public override void Draw()
         {
             var newPoints = GetNewPoints();
-            for (int i = 0; i < newPoints.Count - 1; i++)
+            for (var i = 0; i < newPoints.Count - 1; i++)
                 G.DrawLine(DrawPen, newPoints[i], newPoints[i + 1]);
         }
     }

@@ -30,7 +30,7 @@ namespace GraphicsProject
         private Point _lastLocation;
 
         private IList<PointF> _points;
-        private readonly ObservableCollection<Figure> _figures;
+        private ObservableCollection<Figure> _figures;
 
         private readonly IList<Figure> _selectedFigures;
         private bool _isDrawMode;
@@ -101,7 +101,7 @@ namespace GraphicsProject
                     _currentState = State.Rotate;
                     break;
                 case NamesUtils.Mirror:
-                    _currentState = State.VertMirror;
+                    _currentState = State.HorMirror;
                     break;
                 case NamesUtils.TmoUnion:
                     _currentState = State.TmoUnion;
@@ -137,6 +137,7 @@ namespace GraphicsProject
 
                     case State.Tgp:
                         _figures.Add(new Tgp(_lastLocation));
+                        RedrawAll();
                         break;
 
                     case State.Pgn:
@@ -158,7 +159,7 @@ namespace GraphicsProject
                                 break;
                             case 4:
                                 G.DrawLine(DrawPen, _points[2], _points[3]);
-                                _figures.Add(new CubicSpline(_points));
+                                _figures.Add(new ErLine(_points));
                                 RedrawAll();
                                 break;
                         }
@@ -206,21 +207,14 @@ namespace GraphicsProject
 
                         case State.VertMirror:
                         case State.HorMirror:
-                            AddPoint(_lastLocation);
-                            if (_points.Count == 2)
-                            {
-                                _selectedFigures.FirstOrDefault()?.Mirror(_points[0], _points[1]);
-                                new Line(_points);
-                                _points = new List<PointF>();
-                                RedrawAll();
-                            }
-
+                            _selectedFigures.FirstOrDefault()?.Mirror(_lastLocation, _currentState);
+                            RedrawAll();
                             break;
                         case State.TmoUnion:
                         case State.TmoIntersection:
                             if (_selectedFigures.Count == 2)
                             {
-                                if (_selectedFigures.Any(figure => figure is CubicSpline || figure is Line)) return;
+                                if (_selectedFigures.Any(figure => figure is ErLine || figure is Line)) return;
 
                                 var tmo = new Tmo(_selectedFigures[0], _selectedFigures[1], _currentState);
                                 _figures.Add(tmo);
@@ -252,30 +246,21 @@ namespace GraphicsProject
                 case State.Move:
                     _selectedFigures.FirstOrDefault()?.Move(e.X - _lastLocation.X, e.Y - _lastLocation.Y);
                     RedrawAll();
+                    _lastLocation = e.Location;
                     break;
 
                 case State.HorMirror:
                     RedrawAll();
                     if (_points.Count == 0)
                         G.DrawLine(DrawPenUtils.DrawPenRed, new Point(e.X, e.Y), new Point(CanvasWidth, e.Y));
-
-                    if (_points.Count == 1)
-                        G.DrawLine(DrawPenUtils.DrawPenRed, _points[0],
-                            new Point(e.X, (int) Math.Round(Convert.ToDouble(_points[0].Y))));
                     break;
 
                 case State.VertMirror:
                     RedrawAll();
                     if (_points.Count == 0)
                         G.DrawLine(DrawPenUtils.DrawPenRed, new Point(e.X, e.Y), new Point(e.X, CanvasHeight));
-
-                    if (_points.Count == 1)
-                        G.DrawLine(DrawPenUtils.DrawPenRed, _points[0],
-                            new Point((int) Math.Round(Convert.ToDouble(_points[0].X)), e.Y));
                     break;
             }
-
-            _lastLocation = e.Location;
         }
 
         private void CanvasBox_MouseUp(object sender, MouseEventArgs e)
@@ -318,42 +303,25 @@ namespace GraphicsProject
         {
             foreach (var figure in _selectedFigures)
             {
-                var points = figure.GetNewPoints();
-                if (points == null) return;
-                if (figure is Polygon || figure is CubicSpline)
-                {
-                    var leftX = points.Min(point => point.X) - 2;
-                    var rightX = points.Max(point => point.X) + 2;
-                    var upY = points.Min(point => point.Y) - 2;
-                    var downY = points.Max(point => point.Y) + 2;
-
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, upY, rightX, upY);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, rightX, downY);
-
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, rightX, downY, rightX, upY);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, leftX, downY, leftX, upY);
-                }
-
-                if (figure is Tmo tmo)
-                {
-                    var borderPoints = tmo.GetBorderPoints();
-
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[0], borderPoints[1]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[1], borderPoints[2]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[2], borderPoints[3]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[3], borderPoints[0]);
-                }
-
-                if (figure is Line line)
-                {
-                    var borderPoints = line.GetBorderPoints();
-
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[0], borderPoints[1]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[1], borderPoints[2]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[2], borderPoints[3]);
-                    G.DrawLine(DrawPenUtils.DrawPenGreen, borderPoints[3], borderPoints[0]);
-                }
+                var borderPoints = figure.GetBorderPoints();
+                DrawBorder(borderPoints);
             }
+        }
+
+        private void DrawBorder(IList<PointF> points)
+        {
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                G.DrawLine(DrawPenUtils.DrawPenGreen, points[i], points[i + 1]);
+            }
+
+            G.DrawLine(DrawPenUtils.DrawPenGreen, points.Last(), points.First());
+        }
+
+        private void DeleteSelectedItem()
+        {
+            _figures = new ObservableCollection<Figure>(_figures.Except(_selectedFigures));
+            RedrawAll();
         }
 
         #endregion

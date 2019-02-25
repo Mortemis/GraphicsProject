@@ -9,102 +9,107 @@ namespace GraphicsProject.Figures
 {
     public class Tmo : Figure
     {
-        Figure f1;
-        Figure f2;
-        private State _tmoType;
+        private readonly Figure _firstFigure;
+        private readonly Figure _secondFigure;
+
+        // тип ТМО
+        private readonly State _tmoType;
+
+        // границы ТМО
         private double _downY;
         private double _upY;
         private double _rightX;
         private double _leftX;
 
+        private IList<PointF> _borderPoints;
+
         public Tmo(Figure fig1, Figure fig2, State tmoType)
         {
-            f1 = fig1;
-            f2 = fig2;
-            _tmoType = tmoType;          
+            _firstFigure = fig1;
+            _secondFigure = fig2;
+            _tmoType = tmoType;
         }
 
-        public IList<PointF> GetBorderPoints()
+        public override IList<PointF> GetBorderPoints()
         {
-            return Points;
+            return _borderPoints;
         }
 
         public override void Draw()
         {
-
             _upY = 0;
             _downY = MainForm.CanvasHeight;
 
             _leftX = MainForm.CanvasWidth;
             _rightX = 0;
 
-            List<PointF> l1 = f1.GetNewPoints();
-            List<PointF> l2 = f2.GetNewPoints();
+            var firstFigureNewPoints = _firstFigure.GetNewPoints();
+            var secondFigureNewPoints = _secondFigure.GetNewPoints();
 
             //списки границ фигур
-            List<double> Xa = new List<double>();
-            List<double> Xb = new List<double>();
-            int n = l1.Count() - 1;
-            //вычисляем границы фигуры по У
-            int Ymin = (int) Math.Round(l1[0].Y);
-            int Ymax = Ymin, y;
+            var Xa = new List<double>();
+            var Xb = new List<double>();
+
+            var upperAndLowerBorder = BordersUtils.GetUpperAndLowerBorderTuple(firstFigureNewPoints);
+
+            //ищем максимальные и минимальные значения по У
+            int ymin = upperAndLowerBorder.Item1;
+            int ymax = upperAndLowerBorder.Item2;
+
+            var n = secondFigureNewPoints.Count() - 1;
             for (int i = 0; i < n; i++)
             {
-                y = (int) Math.Round(l1[i].Y);
-                if (y < Ymin) Ymin = y;
-                if (y > Ymax) Ymax = y;
+                var y = (int) Math.Round(secondFigureNewPoints[i].Y);
+                if (y < ymin) ymin = y;
+                if (y > ymax) ymax = y;
             }
 
-            n = l2.Count() - 1;
-            for (int i = 0; i < n; i++)
-            {
-                y = (int) Math.Round(l2[i].Y);
-                if (y < Ymin) Ymin = y;
-                if (y > Ymax) Ymax = y;
-            }
+            if (ymin < 0)
+                ymin = 0;
+            if (ymax > MainForm.CanvasHeight)
+                ymax = MainForm.CanvasHeight;
 
-            if (Ymin < 0)
-                Ymin = 0;
-            if (Ymax > MainForm.CanvasHeight)
-                Ymax = MainForm.CanvasHeight;
-
-            _downY = Ymin;
-            _upY = Ymax;
+            _downY = ymin;
+            _upY = ymax;
 
             //для У в границах многоугольника
-            for (int Y = Ymin; Y < Ymax; Y++)
+            for (int y = ymin; y < ymax; y++)
             {
                 //чистим списки
                 Xa.Clear();
                 Xb.Clear();
                 //считаем число вершин пересекающихся со строкой
-                Xa = cross(l1, Y);
-                Xb = cross(l2, Y);
+                Xa = GetCrossPoints(firstFigureNewPoints, y);
+                Xb = GetCrossPoints(secondFigureNewPoints, y);
+
                 if (Xa.Count() != 0 || Xb.Count() != 0)
-                    drawTMO(Xa, Xb, Y);
+                    DrawTmo(Xa, Xb, y);
             }
 
-            Points = new List<PointF>();
-            Points.Add(new PointF((float) _leftX,(float) _upY));
-            Points.Add(new PointF((float)_rightX, (float)_upY));                        
-            Points.Add(new PointF((float) _rightX,(float) _downY));
-            Points.Add(new PointF((float) _leftX, (float) _downY));
-
+            _borderPoints = new List<PointF>
+            {
+                new PointF((float) _leftX, (float) _upY),
+                new PointF((float) _rightX, (float) _upY),
+                new PointF((float) _rightX, (float) _downY),
+                new PointF((float) _leftX, (float) _downY)
+            };
         }
 
         //пересечение фигуры со строкой У
-        private List<double> cross(List<PointF> l, int y)
+        private List<double> GetCrossPoints(List<PointF> figurePoints, int y)
         {
             List<double> X = new List<double>();
             double x;
-            int n = l.Count - 1;
+            int n = figurePoints.Count - 1;
             for (int i = 0; i < n; i++)
             {
                 //критерий пересечения строки с многоугольником
-                if (((l[i].Y < y) && (l[i + 1].Y >= y)) || ((l[i].Y >= y) && (l[i + 1].Y < y)))
+                if (((figurePoints[i].Y < y) && (figurePoints[i + 1].Y >= y)) ||
+                    ((figurePoints[i].Y >= y) && (figurePoints[i + 1].Y < y)))
                 {
                     //вычисляем Х и записываем его в список
-                    x = (y - l[i].Y) * (l[i + 1].X - l[i].X) / (l[i + 1].Y - l[i].Y) + l[i].X;
+                    x = (y - figurePoints[i].Y) * (figurePoints[i + 1].X - figurePoints[i].X) /
+                        (figurePoints[i + 1].Y - figurePoints[i].Y) + figurePoints[i].X;
                     X.Add(x);
                 }
             }
@@ -115,15 +120,14 @@ namespace GraphicsProject.Figures
 
         private void Sort(List<double[]> M)
         {
-            double temp, tpQ;
             for (int i = 0; i < M.Count - 1; i++)
             {
                 for (int j = i + 1; j < M.Count; j++)
                 {
                     if (M[i][0] > M[j][0])
                     {
-                        temp = M[i][0];
-                        tpQ = M[i][1];
+                        var temp = M[i][0];
+                        var tpQ = M[i][1];
                         M[i][0] = M[j][0];
                         M[i][1] = M[j][1];
                         M[j][0] = temp;
@@ -133,15 +137,16 @@ namespace GraphicsProject.Figures
             }
         }
 
-        //рисуем ТМО
-        private void drawTMO(List<double> listf1, List<double> listf2, int y)
+        private void DrawTmo(List<double> listf1, List<double> listf2, int y)
         {
-            List<double> Xrl = new List<double>();
-            List<double> Xrr = new List<double>();
+            var Xrl = new List<double>();
+            var Xrr = new List<double>();
+
             //массив приращения пороговых функций
             double[] setQ;
+
             //рабочий массив итоговых значений
-            List<double[]> M = new List<double[]>();
+            var M = new List<double[]>();
 
             //объединение
             if (_tmoType == State.TmoUnion)
@@ -194,12 +199,12 @@ namespace GraphicsProject.Figures
             {
                 x = M[i][0];
                 Qn = Q + M[i][1];
-                if (!belong(Q, setQ) && belong(Qn, setQ))
+                if (!BelongToArray(Q, setQ) && BelongToArray(Qn, setQ))
                 {
                     Xrl.Add(x);
                 }
 
-                if (belong(Q, setQ) && !belong(Qn, setQ))
+                if (BelongToArray(Q, setQ) && !BelongToArray(Qn, setQ))
                 {
                     Xrr.Add(x);
                 }
@@ -207,7 +212,7 @@ namespace GraphicsProject.Figures
                 Q = Qn;
             }
 
-            if (belong(Q, setQ))
+            if (BelongToArray(Q, setQ))
                 Xrr.Add(MainForm.CanvasWidth);
 
             //рисуем линию
@@ -215,47 +220,66 @@ namespace GraphicsProject.Figures
             {
                 G.DrawLine(DrawPen, (int) Xrl[i] + 1, y, (int) Xrr[i], y);
 
+                // вычисляем границы
                 if (_downY < y)
                     _downY = y;
                 if (_rightX < Xrr[Xrr.Count - 1])
-                    _rightX = (float)Xrr[Xrr.Count - 1];
+                    _rightX = (float) Xrr[Xrr.Count - 1];
                 if (_upY > y)
                     _upY = y;
                 if (_leftX > Xrl[0])
-                    _leftX = (float)Xrl[0];
+                    _leftX = (float) Xrl[0];
             }
         }
 
         //функция, выясняющая принадлежит ли значение массиву
-        private Boolean belong(double q, double[] sq)
+        private bool BelongToArray(double q, double[] sq)
         {
-            for (int i = 0; i < sq.Length; i++)
-                if (sq[i] == q)
-                    return true;
-            return false;
+            return sq.Contains(q);
         }
 
         public override bool IsSelected(int mX, int mY)
         {
-            return f1.IsSelected(mX, mY) || f2.IsSelected(mX, mY);
+            return _firstFigure.IsSelected(mX, mY) || _secondFigure.IsSelected(mX, mY);
         }
 
         public override void Move(int dx, int dy)
         {
-            f1.Move(dx, dy);
-            f2.Move(dx, dy);
+            _firstFigure.Move(dx, dy);
+            _secondFigure.Move(dx, dy);
         }
 
         public override void Rotate(PointF p, double angle)
         {
-            f1.Rotate(p, angle);
-            f2.Rotate(p, angle);
+            _firstFigure.Rotate(p, angle);
+            _secondFigure.Rotate(p, angle);
         }
 
-        public override void Mirror(PointF a, PointF b)
+        public override void Mirror(Point a, State state)
         {
-            f1.Mirror(a, b);
-            f2.Mirror(a, b);
+            switch (state)
+            {
+                case State.HorMirror:
+                    _firstFigure.HorMirror(a);
+                    _secondFigure.HorMirror(a);
+                    break;
+                case State.VertMirror:
+                    _firstFigure.VertMirror(a);
+                    _secondFigure.VertMirror(a);
+                    break;
+            }
+        }
+
+        public override void VertMirror(PointF a)
+        {
+            _firstFigure.VertMirror(a);
+            _secondFigure.VertMirror(a);
+        }
+
+        public override void HorMirror(PointF a)
+        {
+            _firstFigure.HorMirror(a);
+            _secondFigure.HorMirror(a);
         }
     }
 }

@@ -8,20 +8,18 @@ namespace GraphicsProject.Figures
     public class Line : Figure
     {
         public Line(IList<PointF> points) : base(points)
-        {
-            Points = points.Select(point => point).ToList();
-            var point1 = Points[0];
-            var point2 = Points[1];
+        {            
+            Points = points;
         }
 
         public override void Draw()
         {
-            var Points = GetNewPoints();
+            var newPoints = GetNewPoints();
 
-            var x1 = (int) Points[0].X;
-            var y1 = (int) Points[0].Y;
-            var x2 = (int) Points[1].X;
-            var y2 = (int) Points[1].Y;
+            var x1 = (int) newPoints[0].X;
+            var y1 = (int) newPoints[0].Y;
+            var x2 = (int) newPoints[1].X;
+            var y2 = (int) newPoints[1].Y;
             int x, y, dx, dy, sx = 0, sy = 0;
             int f = 0, fx = 0, dFx = 0, fy = 0, dFy = 0;
             dx = x2 - x1;
@@ -61,15 +59,15 @@ namespace GraphicsProject.Figures
                 } while (true);
         }
 
-        public List<PointF> GetBorderPoints()
+        public override IList<PointF> GetBorderPoints()
         {
-            var Points = GetNewPoints();
+            var newPoints = GetNewPoints();
 
-            var maxY = Points.Min(point => point.Y) - 3;
-            var minY = Points.Max(point => point.Y) + 3;
+            var maxY = newPoints.Min(point => point.Y) - 3;
+            var minY = newPoints.Max(point => point.Y) + 3;
 
-            var minX = Points.Min(point => point.X) - 3;
-            var maxX = Points.Max(point => point.X) + 3;
+            var minX = newPoints.Min(point => point.X) - 3;
+            var maxX = newPoints.Max(point => point.X) + 3;
 
             return new List<PointF>
             {
@@ -79,15 +77,17 @@ namespace GraphicsProject.Figures
 
         public override bool IsSelected(int mX, int mY)
         {
-            var Points = GetNewPoints();
+            var newPoints = GetNewPoints();
 
-            var maxY = Points.Min(point => point.Y) + 3;
-            var minY = Points.Max(point => point.Y) - 3;
+            var maxY = newPoints.Min(point => point.Y) + 3;
+            var minY = newPoints.Max(point => point.Y) - 3;
 
-            var minX = Points.Min(point => point.X) - 3;
-            var maxX = Points.Max(point => point.X) + 3;
+            var minX = newPoints.Min(point => point.X) - 3;
+            var maxX = newPoints.Max(point => point.X) + 3;
 
             return (mY > maxY && mY < minY) && (mX < maxX && mX > minX);
         }
+
+        
     }
 }
