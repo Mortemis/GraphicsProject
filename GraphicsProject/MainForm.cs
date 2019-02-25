@@ -89,7 +89,7 @@ namespace GraphicsProject
             }
             CanvasBox.Image = bmp;
         }
-        
+
         /*
          * Manages status bar.
          */
@@ -121,7 +121,9 @@ namespace GraphicsProject
                 RotateButton.Enabled = true;
                 RemoveButton.Enabled = true;
 
-            } else {
+            }
+            else
+            {
                 RotateButton.Enabled = false;
                 RemoveButton.Enabled = false;
             }
@@ -139,12 +141,17 @@ namespace GraphicsProject
 
         private void SelectFigure()
         {
+            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            {
+                Layers[SelectedLayer].IsSelected = false;
+            }
             SelectedLayer = LayersList.SelectedIndex;
             ChangeState(State.SELECTED);
             if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
             {
+                Layers[SelectedLayer].IsSelected = true;
                 FullUpdateCanvas();
-                Layers[SelectedLayer].DrawSelect();
+                //Layers[SelectedLayer].DrawSelect();
             }
         }
 
@@ -219,7 +226,7 @@ namespace GraphicsProject
                         ChangeState(State.MOVE);
                         break;
                     }
-                    
+
                 case State.ROTATE:
                     {
                         Layers[SelectedLayer].Rotate(e.Location, (int)RotateNumerical.Value);
@@ -253,7 +260,7 @@ namespace GraphicsProject
                         FirstPoint = e.Location;
                         break;
                     }
-                    
+
             }
         }
 
@@ -320,13 +327,13 @@ namespace GraphicsProject
         #region Other events
         private void LayersList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-                SelectFigure();
+
+            SelectFigure();
             if (LayersList.SelectedIndex == -1 && CurrentState == State.SELECTED)
             {
                 ChangeState(State.WAIT);
             }
-            
+
 
             //DrawRectangle on selected Layer.
         }
@@ -339,8 +346,16 @@ namespace GraphicsProject
         {
             // TODO remove
         }
+
         #endregion
 
-        
+        private void ScaleNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (CurrentState == State.SELECTED)
+            {
+                Layers[SelectedLayer].Scale((int)ScaleNumeric.Value);
+                FullUpdateCanvas();
+            }
+        }
     }
 }

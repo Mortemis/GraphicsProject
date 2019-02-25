@@ -11,6 +11,7 @@ namespace GraphicsProject.Figures
         public bool IsSelected;
         public Point SelectBegin;
         public Point SelectEnd;
+        public static int SelectGap = 0;
         public List<Point> Points = new List<Point>();
 
 
@@ -40,8 +41,31 @@ namespace GraphicsProject.Figures
             SelectEnd.Y += DeltaY;
         }
 
-        /*
-        public bool Belongs(Point Point)
+        public void Rotate(Point center, double Angle)
+        {
+            double AngleRadian = Angle * Math.PI / 180D;
+            double cosf = Math.Cos(AngleRadian);
+            double sinf = Math.Sin(AngleRadian);
+
+            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -center.X, -center.Y, 1 } };
+            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { center.X, center.Y, 1 } };
+            double[,] R = { { cosf, -sinf, 0 }, { sinf, cosf, 0 }, { 0, 0, 1 } };
+
+            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(R, MObr)));
+        }
+
+        public void Scale(int Scale)
+        {
+            double ScaleD = Scale / 100;
+            double[,] S =
+            {
+                {1+ScaleD/100, 0, 0},
+                {0, 1+ScaleD/100, 0},
+                {0, 0, 1}
+            };
+            C = MathUtils.MultiplyMatrices(C, S);
+        }
+        public bool BelongsToFigure(Point Point)
         {
             int mX = Point.X;
             int mY = Point.Y;
@@ -79,7 +103,7 @@ namespace GraphicsProject.Figures
             }
 
             return check;
-        }*/
+        }
 
         public List<Point> ApplyTransformations()
         {
@@ -90,22 +114,10 @@ namespace GraphicsProject.Figures
                 double[,] C0 = { { Points[i].X, Points[i].Y, 1 } };
                 var temp = MathUtils.MultiplyMatrices(C0, C);
                 NewPoints.Add(new Point((int)temp[0, 0], (int)temp[0, 1]));
-            }            
+            }
             return NewPoints;
         }
-
-        public void Rotate(Point center, double Angle)
-        {
-            double AngleRadian = Angle * Math.PI / 180D;
-            double cosf = Math.Cos(AngleRadian);
-            double sinf = Math.Sin(AngleRadian);
-
-            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -center.X, -center.Y, 1 } };
-            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { center.X, center.Y, 1 } };
-            double[,] R = { { cosf, -sinf, 0 }, { sinf, cosf, 0 }, { 0, 0, 1 } };
-
-            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(R, MObr)));
-        }
+ 
 
         public void DrawSelect()
         {
@@ -113,14 +125,17 @@ namespace GraphicsProject.Figures
             Select.Draw();
         }
 
+
         public abstract void Draw();
 
         public static void PutPoint(Point Position)
         {
-            MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
-
-            //MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
+            //MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
+            if (Position.Y < MainForm.bmp.Height && Position.Y >= 0 && Position.X < MainForm.bmp.Width && Position.X >= 0)
+            MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
         }
+
+
     }
 
 }

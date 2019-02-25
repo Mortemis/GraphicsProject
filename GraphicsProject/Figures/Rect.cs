@@ -11,6 +11,11 @@ namespace GraphicsProject.Figures
     {
         public Rect(Point Begin, Point End)
         {
+            Begin.X -= SelectGap;
+            Begin.Y -= SelectGap;
+            End.X += SelectGap;
+            End.Y += SelectGap;
+
             Points = new List<Point>();
             Point Point1 = new Point(Begin.X, End.Y);
             Point Point2 = new Point(End.X, Begin.Y);

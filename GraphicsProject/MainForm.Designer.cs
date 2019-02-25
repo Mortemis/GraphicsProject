@@ -50,14 +50,14 @@
             this.RotateNumerical = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.ScaleNumeric = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -121,6 +121,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CanvasBox.BackColor = System.Drawing.Color.White;
+            this.CanvasBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CanvasBox.Location = new System.Drawing.Point(102, 27);
             this.CanvasBox.Name = "CanvasBox";
             this.CanvasBox.Size = new System.Drawing.Size(596, 392);
@@ -195,7 +196,7 @@
             // 
             this.LayersList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.LayersList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LayersList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LayersList.FormattingEnabled = true;
             this.LayersList.IntegralHeight = false;
             this.LayersList.Location = new System.Drawing.Point(704, 27);
@@ -274,18 +275,19 @@
             this.panel1.Size = new System.Drawing.Size(83, 75);
             this.panel1.TabIndex = 15;
             // 
-            // numericUpDown1
+            // ScaleNumeric
             // 
-            this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown1.Location = new System.Drawing.Point(704, 367);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(81, 20);
-            this.numericUpDown1.TabIndex = 15;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.ScaleNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ScaleNumeric.Location = new System.Drawing.Point(704, 367);
+            this.ScaleNumeric.Name = "ScaleNumeric";
+            this.ScaleNumeric.Size = new System.Drawing.Size(81, 20);
+            this.ScaleNumeric.TabIndex = 15;
+            this.ScaleNumeric.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
+            this.ScaleNumeric.ValueChanged += new System.EventHandler(this.ScaleNumeric_ValueChanged);
             // 
             // label3
             // 
@@ -303,7 +305,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.ScaleNumeric);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RemoveButton);
@@ -327,7 +329,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -357,7 +359,7 @@
         private System.Windows.Forms.NumericUpDown RotateNumerical;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown ScaleNumeric;
         private System.Windows.Forms.Label label3;
     }
 }

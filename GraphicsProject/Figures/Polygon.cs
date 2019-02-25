@@ -5,8 +5,6 @@ namespace GraphicsProject.Figures
 {
     public abstract class Polygon : Figure
     {
-        
-
 
         public void Fill()
         {
@@ -79,6 +77,7 @@ namespace GraphicsProject.Figures
                 Line.Draw(Points[i], Points[i + 1]);
             }
             Fill();
+            if (IsSelected) DrawSelect();
             
         }
 

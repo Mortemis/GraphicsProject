@@ -5,13 +5,13 @@ namespace GraphicsProject.Figures
 {
     public class Line : Figure
     {
-        private Point Begin;
-        private Point End;
+
 
         public Line(Point Begin, Point End)
         {
-            this.Begin = Begin;
-            this.End = End;
+            Points.Clear();
+            Points.Add(Begin);
+            Points.Add(End);
             SelectBegin = Begin;
             SelectEnd = End;
         }
@@ -61,10 +61,12 @@ namespace GraphicsProject.Figures
             }
         }
 
+
         public override void Draw()
         {
+            var Points = ApplyTransformations();
             Pen DrPen = MainForm.DrawPen;
-            int x1 = Begin.X; int y1 = Begin.Y; int x2 = End.X; int y2 = End.Y;
+            int x1 = Points[0].X; int y1 = Points[0].Y; int x2 = Points[1].X; int y2 = Points[1].Y;
             int x, y, dx, dy, Sx = 0, Sy = 0;
             int F = 0, Fx = 0, dFx = 0, Fy = 0, dFy = 0;
             dx = x2 - x1;
@@ -103,7 +105,7 @@ namespace GraphicsProject.Figures
                     else x = x + Sx;
                 } while (true);
             }
-
+            if (IsSelected) DrawSelect();
         }
 
         public override string ToString()
