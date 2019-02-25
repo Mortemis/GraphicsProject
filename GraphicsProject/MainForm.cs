@@ -54,7 +54,6 @@ namespace GraphicsProject
         // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
         List<Figure> Layers = new List<Figure>();
         int SelectedLayer = -1; //-1 - no select
-        bool CodeSelect = false; // Protects from infinite cycle when selectedchange... event calls FullUpdate.
 
         public MainForm()
         {
@@ -80,29 +79,22 @@ namespace GraphicsProject
             FullUpdateCanvas();
         }
 
-        private void FullUpdateCanvas()
+        //no use
+        private void UpdateBmp()
         {
-            g.Clear(Color.White);
-            LayersList.Items.Clear();
             foreach (Figure figure in Layers)
             {
                 figure.Draw();
-
-                LayersList.Items.Add(figure.ToString());
             }
-            CodeSelect = true;
+        }
 
-            if (SelectedLayer < LayersList.Items.Count)
+        private void FullUpdateCanvas()
+        {
+            g.Clear(Color.White);
+            foreach (Figure figure in Layers)
             {
-                LayersList.SelectedIndex = SelectedLayer;
+                figure.Draw();
             }
-            else
-            {
-                //FIX out of bounds.
-                SelectedLayer--;
-                LayersList.SelectedIndex = SelectedLayer;
-            }
-
             CanvasBox.Image = bmp;
         }
 
@@ -115,14 +107,16 @@ namespace GraphicsProject
 
         private void ChangeState(State NewState)
         {
+            /*
             if (CurrentState == State.SELECTED && NewState != State.SELECTED)
             {
-                SelectedLayer = -1;
+                //SelectedLayer = -1;
                 RotateButton.Enabled = false;
                 ScaleButton.Enabled = false;
                 RemoveButton.Enabled = false;
-                LayersList.ClearSelected();
-            }
+                //LayersList.ClearSelected();
+            }*/
+
 
             if (NewState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
@@ -133,6 +127,14 @@ namespace GraphicsProject
             }
             CurrentState = NewState;
             ManageStatus();
+        }
+
+
+        private void AddFigure(Figure Figure)
+        {
+            Layers.Add(Figure);
+            LayersList.Items.Add(Figure.ToString());
+            FullUpdateCanvas();
         }
 
         private void SelectFigure()
@@ -189,7 +191,6 @@ namespace GraphicsProject
                     LayersList.Items.RemoveAt(LayersList.SelectedIndex);
                     FullUpdateCanvas();
                     ChangeState(State.WAIT);
-                    CodeSelect = false;
                 }
                 catch (IndexOutOfRangeException) { }
             }
@@ -239,9 +240,8 @@ namespace GraphicsProject
                         if (e.Button == MouseButtons.Right)
                         {
                             ActiveBezier.Finish();
-                            Layers.Add(ActiveBezier);
+                            AddFigure(ActiveBezier);
                             ActiveBezier = new Bezier();
-                            UpdateCanvas(Layers.Count - 1);
                         }
                         break;
                     }
@@ -265,24 +265,22 @@ namespace GraphicsProject
             {
                 case State.DRAW_LINE:
                     {
-                        Layers.Add(new Line(FirstPoint, e.Location));
-                        UpdateCanvas(Layers.Count - 1);
+                        AddFigure(new Line(FirstPoint, e.Location));
                         break;
                     }
                 case State.DRAW_PARA:
                     {
-                        Layers.Add(new Para(FirstPoint, e.Location));
-                        UpdateCanvas(Layers.Count - 1);
+                        AddFigure(new Para(FirstPoint, e.Location));
                         break;
                     }
                 case State.DRAW_ANGLE:
                     {
-                        Layers.Add(new Angle(FirstPoint, e.Location));
-                        UpdateCanvas(Layers.Count - 1);
+                        AddFigure(new Angle(FirstPoint, e.Location));
                         break;
                     }
                 case State.MOVE:
                     {
+                        FullUpdateCanvas();
                         ChangeState(State.SELECTED);
                         break;
                     }
@@ -295,8 +293,12 @@ namespace GraphicsProject
             {
                 case State.MOVE:
                     {
-                        Layers[SelectedLayer].Move(e.X - FirstPoint.X, e.Y - FirstPoint.Y);
+                        int DeltaX = e.X - FirstPoint.X;
+                        int DeltaY = e.Y - FirstPoint.Y;
+                        Layers[SelectedLayer].Move(DeltaX, DeltaY);
                         FirstPoint = e.Location;
+                        FullUpdateCanvas();
+                        //FirstPoint = e.Location;
                         break;
                     }
             }
@@ -321,8 +323,7 @@ namespace GraphicsProject
         #region Other events
         private void LayersList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!CodeSelect)
-            {
+            
                 SelectFigure();
                 try
                 {
@@ -331,18 +332,13 @@ namespace GraphicsProject
                 {
                     RotateNumerical.Value = 0;
                 }
-            }
-            else
-            {
-                CodeSelect = false;
-            }
+            
 
             //DrawRectangle on selected Layer.
         }
 
         private void LayersList_MouseDown(object sender, MouseEventArgs e)
         {
-            CodeSelect = false;
         }
 
         private void RotateNumerical_ValueChanged(object sender, EventArgs e)

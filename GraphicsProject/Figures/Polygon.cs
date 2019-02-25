@@ -5,7 +5,7 @@ namespace GraphicsProject.Figures
 {
     public abstract class Polygon : Figure
     {
-        public List<Point> Points = new List<Point>();
+        
 
 
         public void Fill()
@@ -72,6 +72,7 @@ namespace GraphicsProject.Figures
 
         public override void Draw()
         {
+            ApplyTransformations();
             for (int i = 0; i < Points.Count-1; i++)
             {
                 Line.Draw(Points[i], Points[i + 1]);
@@ -81,6 +82,7 @@ namespace GraphicsProject.Figures
             {
                 Rotate(RotationCenter, Rotation);
             }
+            
         }
 
         public override string ToString()
