@@ -79,10 +79,6 @@ namespace GraphicsProject.Figures
                 Line.Draw(Points[i], Points[i + 1]);
             }
             Fill();
-            if (Rotation != 0)
-            {
-                Rotate(RotationCenter, Rotation);
-            }
             
         }
 

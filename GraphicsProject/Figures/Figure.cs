@@ -11,8 +11,6 @@ namespace GraphicsProject.Figures
         public bool IsSelected;
         public Point SelectBegin;
         public Point SelectEnd;
-        public Point RotationCenter;
-        public int Rotation = 0;
         public List<Point> Points = new List<Point>();
 
 

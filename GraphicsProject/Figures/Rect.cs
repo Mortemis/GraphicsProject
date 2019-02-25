@@ -27,10 +27,7 @@ namespace GraphicsProject.Figures
             {
                 Line.Draw(Points[i], Points[i + 1]);
             }
-            if (Rotation != 0)
-            {
-                Rotate(RotationCenter, Rotation);
-            }
+
         }
 
         public override string ToString()

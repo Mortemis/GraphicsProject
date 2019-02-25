@@ -79,14 +79,6 @@ namespace GraphicsProject
             FullUpdateCanvas();
         }
 
-        //no use
-        private void UpdateBmp()
-        {
-            foreach (Figure figure in Layers)
-            {
-                figure.Draw();
-            }
-        }
 
         private void FullUpdateCanvas()
         {
@@ -97,7 +89,10 @@ namespace GraphicsProject
             }
             CanvasBox.Image = bmp;
         }
-
+        
+        /*
+         * Manages status bar.
+         */
         private void ManageStatus()
         {
             StatusLabel.Text = CurrentState.ToString();
@@ -105,6 +100,9 @@ namespace GraphicsProject
             //TODO switchcase
         }
 
+        /*
+         * Changes current state and manages gui according to state.
+         */
         private void ChangeState(State NewState)
         {
             /*
@@ -123,6 +121,9 @@ namespace GraphicsProject
                 RotateButton.Enabled = true;
                 RemoveButton.Enabled = true;
 
+            } else {
+                RotateButton.Enabled = false;
+                RemoveButton.Enabled = false;
             }
             CurrentState = NewState;
             ManageStatus();
@@ -221,7 +222,8 @@ namespace GraphicsProject
                     
                 case State.ROTATE:
                     {
-                        Layers[SelectedLayer].RotationCenter = e.Location;
+                        Layers[SelectedLayer].Rotate(e.Location, (int)RotateNumerical.Value);
+                        FullUpdateCanvas();
                         ChangeState(State.SELECTED);
                         break;
                     }
@@ -320,13 +322,6 @@ namespace GraphicsProject
         {
             
                 SelectFigure();
-                try
-                {
-                    RotateNumerical.Value = Layers[SelectedLayer].Rotation;
-                } catch (ArgumentOutOfRangeException)
-                {
-                    RotateNumerical.Value = 0;
-                }
             if (LayersList.SelectedIndex == -1 && CurrentState == State.SELECTED)
             {
                 ChangeState(State.WAIT);
@@ -342,11 +337,7 @@ namespace GraphicsProject
 
         private void RotateNumerical_ValueChanged(object sender, EventArgs e)
         {
-            if (CurrentState == State.ROTATE && SelectedLayer != -1)
-            {               
-                Layers[SelectedLayer].Rotation = (int)RotateNumerical.Value;
-                FullUpdateCanvas();
-            }
+            // TODO remove
         }
         #endregion
 
