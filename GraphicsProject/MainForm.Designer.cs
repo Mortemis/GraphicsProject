@@ -44,15 +44,20 @@
             this.AngleButton = new System.Windows.Forms.Button();
             this.LayersList = new System.Windows.Forms.ListBox();
             this.RotateButton = new System.Windows.Forms.Button();
-            this.ScaleButton = new System.Windows.Forms.Button();
             this.RemoveButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.RotateNumerical = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -204,25 +209,13 @@
             // 
             this.RotateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RotateButton.Enabled = false;
-            this.RotateButton.Location = new System.Drawing.Point(704, 272);
+            this.RotateButton.Location = new System.Drawing.Point(1, 1);
             this.RotateButton.Name = "RotateButton";
-            this.RotateButton.Size = new System.Drawing.Size(84, 23);
+            this.RotateButton.Size = new System.Drawing.Size(77, 23);
             this.RotateButton.TabIndex = 9;
             this.RotateButton.Text = "Rotate";
             this.RotateButton.UseVisualStyleBackColor = true;
             this.RotateButton.Click += new System.EventHandler(this.RotateButton_Click);
-            // 
-            // ScaleButton
-            // 
-            this.ScaleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ScaleButton.Enabled = false;
-            this.ScaleButton.Location = new System.Drawing.Point(704, 327);
-            this.ScaleButton.Name = "ScaleButton";
-            this.ScaleButton.Size = new System.Drawing.Size(84, 23);
-            this.ScaleButton.TabIndex = 10;
-            this.ScaleButton.Text = "Scale";
-            this.ScaleButton.UseVisualStyleBackColor = true;
-            this.ScaleButton.Click += new System.EventHandler(this.ScaleButton_Click);
             // 
             // RemoveButton
             // 
@@ -254,22 +247,63 @@
             // 
             // RotateNumerical
             // 
-            this.RotateNumerical.Location = new System.Drawing.Point(705, 301);
+            this.RotateNumerical.Location = new System.Drawing.Point(3, 45);
             this.RotateNumerical.Name = "RotateNumerical";
-            this.RotateNumerical.Size = new System.Drawing.Size(83, 20);
+            this.RotateNumerical.Size = new System.Drawing.Size(77, 20);
             this.RotateNumerical.TabIndex = 13;
             this.RotateNumerical.ValueChanged += new System.EventHandler(this.RotateNumerical_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(37, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Angle:";
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.RotateButton);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.RotateNumerical);
+            this.panel1.Location = new System.Drawing.Point(704, 272);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(83, 75);
+            this.panel1.TabIndex = 15;
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(704, 367);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(81, 20);
+            this.numericUpDown1.TabIndex = 15;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(704, 354);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Scale:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.RotateNumerical);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RemoveButton);
-            this.Controls.Add(this.ScaleButton);
-            this.Controls.Add(this.RotateButton);
             this.Controls.Add(this.LayersList);
             this.Controls.Add(this.AngleButton);
             this.Controls.Add(this.ParaButton);
@@ -288,6 +322,9 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -311,11 +348,14 @@
         private System.Windows.Forms.Button AngleButton;
         private System.Windows.Forms.ListBox LayersList;
         private System.Windows.Forms.Button RotateButton;
-        private System.Windows.Forms.Button ScaleButton;
         private System.Windows.Forms.Button RemoveButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.NumericUpDown RotateNumerical;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label3;
     }
 }
 

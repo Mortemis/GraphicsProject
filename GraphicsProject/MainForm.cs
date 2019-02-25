@@ -121,7 +121,6 @@ namespace GraphicsProject
             if (NewState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
                 RotateButton.Enabled = true;
-                ScaleButton.Enabled = true;
                 RemoveButton.Enabled = true;
 
             }
@@ -176,10 +175,6 @@ namespace GraphicsProject
             ChangeState(State.ROTATE);
         }
 
-        private void ScaleButton_Click(object sender, EventArgs e)
-        {
-            ScaleButton.Enabled = false;
-        }
 
         private void RemoveButton_Click(object sender, EventArgs e)
         {
@@ -227,6 +222,7 @@ namespace GraphicsProject
                 case State.ROTATE:
                     {
                         Layers[SelectedLayer].RotationCenter = e.Location;
+                        ChangeState(State.SELECTED);
                         break;
                     }
                 case State.DRAW_LINE:

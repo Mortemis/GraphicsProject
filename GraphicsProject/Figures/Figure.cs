@@ -8,6 +8,7 @@ namespace GraphicsProject.Figures
 {
     public abstract class Figure
     {
+        public bool IsSelected;
         public Point SelectBegin;
         public Point SelectEnd;
         public Point RotationCenter;
@@ -38,7 +39,7 @@ namespace GraphicsProject.Figures
             SelectBegin.X += DeltaX;
             SelectBegin.Y += DeltaY;
             SelectEnd.X += DeltaX;
-            SelectEnd.Y += DeltaX;
+            SelectEnd.Y += DeltaY;
         }
 
         /*
