@@ -298,7 +298,6 @@ namespace GraphicsProject
                         Layers[SelectedLayer].Move(DeltaX, DeltaY);
                         FirstPoint = e.Location;
                         FullUpdateCanvas();
-                        //FirstPoint = e.Location;
                         break;
                     }
             }
@@ -332,6 +331,10 @@ namespace GraphicsProject
                 {
                     RotateNumerical.Value = 0;
                 }
+            if (LayersList.SelectedIndex == -1 && CurrentState == State.SELECTED)
+            {
+                ChangeState(State.WAIT);
+            }
             
 
             //DrawRectangle on selected Layer.
