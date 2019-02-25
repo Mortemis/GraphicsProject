@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -7,10 +8,7 @@ namespace GraphicsProject.Figures
     {
         public CubicSpline(IList<PointF> points) : base(points)
         {
-        }
-
-        public override void Draw()
-        {
+            var ermitPoints = new List<PointF>();
             double[,] Mh = {{2, -2, 1, 1}, {-3, 3, -2, -1}, {0, 0, 1, 0}, {1, 0, 0, 0}}; //Эрмитовая матрицa
             var L = new double[4, 2]; // матрица неизвестных коэффициентов
             var dt = 0.001; //шаг табуляции
@@ -32,10 +30,7 @@ namespace GraphicsProject.Figures
             var col = Gh.GetLength(1);
             var inner = Gh.GetLength(0);
 
-            for (var i = 0; i < row; i++)
-            for (var j = 0; j < col; j++)
-            for (var k = 0; k < inner; k++)
-                L[i, j] += Mh[i, k] * Gh[k, j];
+            L = MatrixUtils.MatrixMult(Mh, Gh);
 
             double Ptx = 0;
             double Pty = 0;
@@ -47,11 +42,22 @@ namespace GraphicsProject.Figures
                 Ptx = L[0, 0] * t * t * t + L[1, 0] * t * t + L[2, 0] * t + L[3, 0];
                 Pty = L[0, 1] * t * t * t + L[1, 1] * t * t + L[2, 1] * t + L[3, 1];
 
+                ermitPoints.Add(new PointF((float) Ptx, (float) Pty));
                 G.DrawLine(DrawPen, (int) xPred, (int) yPred, (int) Ptx, (int) Pty);
                 t = t + dt;
                 xPred = Ptx;
                 yPred = Pty;
+                ermitPoints.Add(new PointF((float) xPred, (float) yPred));
             }
+
+            Points = ermitPoints;
+        }
+
+        public override void Draw()
+        {
+            var newPoints = GetNewPoints();
+            for (int i = 0; i < newPoints.Count - 1; i++)
+                G.DrawLine(DrawPen, newPoints[i], newPoints[i + 1]);
         }
     }
 }

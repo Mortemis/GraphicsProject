@@ -142,7 +142,7 @@
             this.btnTgp.Location = new System.Drawing.Point(0, 60);
             this.btnTgp.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
             this.btnTgp.Name = "btnTgp";
-            this.btnTgp.Size = new System.Drawing.Size(276, 33);
+            this.btnTgp.Size = new System.Drawing.Size(251, 33);
             this.btnTgp.TabIndex = 2;
             this.btnTgp.Text = "Прямоугольный треугольник";
             this.btnTgp.UseVisualStyleBackColor = false;
@@ -185,16 +185,31 @@
             this.panel2.Location = new System.Drawing.Point(3, 163);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(205, 28);
+            this.panel2.Size = new System.Drawing.Size(195, 28);
             this.panel2.TabIndex = 5;
             // 
             // anglesCounter
             // 
-            this.anglesCounter.Location = new System.Drawing.Point(141, 4);
+            this.anglesCounter.Location = new System.Drawing.Point(131, 4);
             this.anglesCounter.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.anglesCounter.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.anglesCounter.Minimum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             this.anglesCounter.Name = "anglesCounter";
             this.anglesCounter.Size = new System.Drawing.Size(61, 22);
             this.anglesCounter.TabIndex = 1;
+            this.anglesCounter.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             // 
             // label2
             // 
@@ -299,13 +314,23 @@
             this.panel1.Location = new System.Drawing.Point(3, 133);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(205, 28);
+            this.panel1.Size = new System.Drawing.Size(147, 30);
             this.panel1.TabIndex = 8;
             // 
             // angleRotate
             // 
-            this.angleRotate.Location = new System.Drawing.Point(141, 4);
+            this.angleRotate.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.angleRotate.Location = new System.Drawing.Point(83, 6);
             this.angleRotate.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.angleRotate.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
             this.angleRotate.Name = "angleRotate";
             this.angleRotate.Size = new System.Drawing.Size(61, 22);
             this.angleRotate.TabIndex = 1;
@@ -313,7 +338,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(53, 6);
+            this.label4.Location = new System.Drawing.Point(5, 6);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(81, 17);
             this.label4.TabIndex = 0;
@@ -421,8 +446,6 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Course Project";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();

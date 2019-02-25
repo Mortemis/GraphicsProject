@@ -9,6 +9,7 @@
         Move,
         Rotate,
         HorMirror,
+        VertMirror,
         TmoUnion,
         TmoIntersection
     }
