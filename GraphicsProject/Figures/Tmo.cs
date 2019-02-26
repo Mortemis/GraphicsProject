@@ -21,6 +21,7 @@ namespace GraphicsProject.Figures
         private double _rightX;
         private double _leftX;
 
+        // границы ТМО
         private IList<PointF> _borderPoints;
 
         public Tmo(Figure fig1, Figure fig2, State tmoType)
@@ -30,11 +31,13 @@ namespace GraphicsProject.Figures
             _tmoType = tmoType;
         }
 
+        // получаем границы ТМО
         public override IList<PointF> GetBorderPoints()
         {
             return _borderPoints;
         }
 
+        // переопределенный метод рисования ТМО
         public override void Draw()
         {
             _upY = 0;
@@ -78,6 +81,7 @@ namespace GraphicsProject.Figures
                 //чистим списки
                 Xa.Clear();
                 Xb.Clear();
+
                 //считаем число вершин пересекающихся со строкой
                 Xa = GetCrossPoints(firstFigureNewPoints, y);
                 Xb = GetCrossPoints(secondFigureNewPoints, y);
@@ -98,8 +102,7 @@ namespace GraphicsProject.Figures
         //пересечение фигуры со строкой У
         private List<double> GetCrossPoints(List<PointF> figurePoints, int y)
         {
-            List<double> X = new List<double>();
-            double x;
+            var X = new List<double>();
             int n = figurePoints.Count - 1;
             for (int i = 0; i < n; i++)
             {
@@ -108,8 +111,8 @@ namespace GraphicsProject.Figures
                     ((figurePoints[i].Y >= y) && (figurePoints[i + 1].Y < y)))
                 {
                     //вычисляем Х и записываем его в список
-                    x = (y - figurePoints[i].Y) * (figurePoints[i + 1].X - figurePoints[i].X) /
-                        (figurePoints[i + 1].Y - figurePoints[i].Y) + figurePoints[i].X;
+                    double x = (y - figurePoints[i].Y) * (figurePoints[i + 1].X - figurePoints[i].X) /
+                               (figurePoints[i + 1].Y - figurePoints[i].Y) + figurePoints[i].X;
                     X.Add(x);
                 }
             }
@@ -118,7 +121,7 @@ namespace GraphicsProject.Figures
             return X;
         }
 
-        private void Sort(List<double[]> M)
+        private void Sort(IList<double[]> M)
         {
             for (int i = 0; i < M.Count - 1; i++)
             {

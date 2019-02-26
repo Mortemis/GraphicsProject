@@ -11,6 +11,7 @@ namespace GraphicsProject.Figures
         public Line(IList<PointF> points) : base(points)
         {            
             Points = points;
+            Draw();
         }
 
         public override void Draw()

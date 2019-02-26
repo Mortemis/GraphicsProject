@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using System.Collections.Generic;
 using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
     public abstract class Polygon : Figure
-    {
-        protected Polygon(Point centerPoint)
-        {
-        }
-
-        protected Polygon(IList<PointF> points) : base(points)
-        {
-        }
-
+    {       
         protected Polygon()
         {
         }

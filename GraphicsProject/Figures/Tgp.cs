@@ -7,7 +7,7 @@ namespace GraphicsProject.Figures
 {
     public class Tgp : Polygon
     {
-        public Tgp(Point centerPoint) : base(centerPoint)
+        public Tgp(Point centerPoint) 
         {
             Points = new List<PointF>
             {
