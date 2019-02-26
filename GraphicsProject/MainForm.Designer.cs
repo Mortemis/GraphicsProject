@@ -53,8 +53,8 @@
             this.ScaleNumeric = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.ScaleInButton = new System.Windows.Forms.Button();
             this.ScaleOutButton = new System.Windows.Forms.Button();
+            this.ScaleInButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -95,8 +95,9 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
             // ExitToolStripMenuItem
             // 
@@ -116,8 +117,9 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.helpToolStripMenuItem1.Text = "Help";
+            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.HelpToolStripMenuItem1_Click);
             // 
             // CanvasBox
             // 
@@ -256,6 +258,11 @@
             this.RotateNumerical.Name = "RotateNumerical";
             this.RotateNumerical.Size = new System.Drawing.Size(77, 20);
             this.RotateNumerical.TabIndex = 13;
+            this.RotateNumerical.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
             this.RotateNumerical.ValueChanged += new System.EventHandler(this.RotateNumerical_ValueChanged);
             // 
             // label2
@@ -282,11 +289,6 @@
             // ScaleNumeric
             // 
             this.ScaleNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ScaleNumeric.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.ScaleNumeric.Location = new System.Drawing.Point(1, 76);
             this.ScaleNumeric.Maximum = new decimal(new int[] {
             10,
@@ -294,13 +296,18 @@
             0,
             0});
             this.ScaleNumeric.Minimum = new decimal(new int[] {
-            10,
+            2,
             0,
             0,
-            -2147483648});
+            0});
             this.ScaleNumeric.Name = "ScaleNumeric";
             this.ScaleNumeric.Size = new System.Drawing.Size(78, 20);
             this.ScaleNumeric.TabIndex = 15;
+            this.ScaleNumeric.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             this.ScaleNumeric.ValueChanged += new System.EventHandler(this.ScaleNumeric_ValueChanged);
             // 
             // label3
@@ -326,18 +333,6 @@
             this.panel2.Size = new System.Drawing.Size(86, 101);
             this.panel2.TabIndex = 17;
             // 
-            // ScaleInButton
-            // 
-            this.ScaleInButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ScaleInButton.Enabled = false;
-            this.ScaleInButton.Location = new System.Drawing.Point(3, 1);
-            this.ScaleInButton.Name = "ScaleInButton";
-            this.ScaleInButton.Size = new System.Drawing.Size(77, 23);
-            this.ScaleInButton.TabIndex = 15;
-            this.ScaleInButton.Text = "Scale In";
-            this.ScaleInButton.UseVisualStyleBackColor = true;
-            this.ScaleInButton.Click += new System.EventHandler(this.ScaleInButton_Click);
-            // 
             // ScaleOutButton
             // 
             this.ScaleOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -349,6 +344,18 @@
             this.ScaleOutButton.Text = "Scale Out";
             this.ScaleOutButton.UseVisualStyleBackColor = true;
             this.ScaleOutButton.Click += new System.EventHandler(this.ScaleOutButton_Click);
+            // 
+            // ScaleInButton
+            // 
+            this.ScaleInButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ScaleInButton.Enabled = false;
+            this.ScaleInButton.Location = new System.Drawing.Point(3, 1);
+            this.ScaleInButton.Name = "ScaleInButton";
+            this.ScaleInButton.Size = new System.Drawing.Size(77, 23);
+            this.ScaleInButton.TabIndex = 15;
+            this.ScaleInButton.Text = "Scale In";
+            this.ScaleInButton.UseVisualStyleBackColor = true;
+            this.ScaleInButton.Click += new System.EventHandler(this.ScaleInButton_Click);
             // 
             // MainForm
             // 

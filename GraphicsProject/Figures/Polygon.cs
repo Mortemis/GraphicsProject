@@ -76,10 +76,10 @@ namespace GraphicsProject.Figures
             SelectEnd.Y = Points[0].Y;
             foreach (var Point in Points)
             {
-                if (SelectBegin.X < Point.X) SelectBegin.X = Point.X;
-                if (SelectBegin.Y < Point.Y) SelectBegin.Y = Point.Y;
-                if (SelectEnd.X > Point.X) SelectEnd.X = Point.X;
-                if (SelectEnd.Y > Point.Y) SelectEnd.Y = Point.Y;
+                if (SelectBegin.X > Point.X) SelectBegin.X = Point.X;
+                if (SelectBegin.Y > Point.Y) SelectBegin.Y = Point.Y;
+                if (SelectEnd.X < Point.X) SelectEnd.X = Point.X;
+                if (SelectEnd.Y < Point.Y) SelectEnd.Y = Point.Y;
             }
         } 
 

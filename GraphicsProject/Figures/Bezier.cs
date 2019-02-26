@@ -30,10 +30,10 @@ namespace GraphicsProject.Figures
 
         private void FindSelection(Point Point)
         {
-            if (SelectBegin.X < Point.X) SelectBegin.X = Point.X;
-            if (SelectBegin.Y < Point.Y) SelectBegin.Y = Point.Y;
-            if (SelectEnd.X > Point.X) SelectEnd.X = Point.X;
-            if (SelectEnd.Y > Point.Y) SelectEnd.Y = Point.Y;
+            if (SelectBegin.X > Point.X) SelectBegin.X = Point.X;
+            if (SelectBegin.Y > Point.Y) SelectBegin.Y = Point.Y;
+            if (SelectEnd.X < Point.X) SelectEnd.X = Point.X;
+            if (SelectEnd.Y < Point.Y) SelectEnd.Y = Point.Y;
         }
 
         public override void Draw()

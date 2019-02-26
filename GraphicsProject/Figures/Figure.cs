@@ -12,7 +12,7 @@ namespace GraphicsProject.Figures
         public Point SelectBegin;
         public Point SelectEnd;
 
-        public static int SelectGap = 0;
+        public static int SelectGap = 5;
         public List<Point> Points = new List<Point>();
 
 

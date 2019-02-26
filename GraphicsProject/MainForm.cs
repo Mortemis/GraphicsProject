@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -375,6 +376,20 @@ namespace GraphicsProject
                 Layers[SelectedLayer].Scale((int)ScaleNumeric.Value);
                 FullUpdateCanvas();
             }
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = "Image.jpg";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                bmp.Save(dialog.FileName, ImageFormat.Jpeg);
+            }
+        }
+
+        private void HelpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
         }
     }
 }
