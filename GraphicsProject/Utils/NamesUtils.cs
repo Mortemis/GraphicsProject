@@ -13,5 +13,8 @@
 
         public const string TmoUnion = "Объединение";
         public const string TmoIntersection = "Пересечение";
+
+        public const string DeleteItem = "Удалить элемент";
+
     }
 }

@@ -11,6 +11,7 @@
         HorMirror,
         VertMirror,
         TmoUnion,
-        TmoIntersection
+        TmoIntersection,
+        DeleteItem
     }
 }

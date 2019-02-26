@@ -8,9 +8,10 @@ namespace GraphicsProject.Figures
 {
     public abstract class Figure
     {
-        protected static Pen DrawPen = MainForm.DrawPen;
+        public static Pen DrawPenStatic = MainForm.DrawPen;
         protected static Graphics G = MainForm.G;
 
+        protected Pen DrawPen;
         protected IList<PointF> Points;
 
         protected double[,] C =
@@ -22,10 +23,12 @@ namespace GraphicsProject.Figures
 
         protected Figure()
         {
+            DrawPen = DrawPenStatic;
         }
 
         protected Figure(IList<PointF> points)
         {
+            DrawPen = DrawPenStatic;
             Points = points;
             Draw();
         }
@@ -181,7 +184,7 @@ namespace GraphicsProject.Figures
 
         public static void PutPoint(PointF position)
         {
-            MainForm.G.DrawRectangle(DrawPen, position.X, position.Y, 1, 1);
+            MainForm.G.DrawRectangle(DrawPenStatic , position.X, position.Y, 1, 1);
         }
     }
 }

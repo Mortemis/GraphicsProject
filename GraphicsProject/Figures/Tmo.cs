@@ -281,5 +281,10 @@ namespace GraphicsProject.Figures
             _firstFigure.HorMirror(a);
             _secondFigure.HorMirror(a);
         }
+
+        public override string ToString()
+        {
+            return "ТМО";       
+        }
     }
 }

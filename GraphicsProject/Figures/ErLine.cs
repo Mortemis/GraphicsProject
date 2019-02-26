@@ -67,5 +67,10 @@ namespace GraphicsProject.Figures
             for (var i = 0; i < newPoints.Count - 1; i++)
                 G.DrawLine(DrawPen, newPoints[i], newPoints[i + 1]);
         }
+
+        public override string ToString()
+        {
+            return NamesUtils.CubicSpline;
+        }
     }
 }

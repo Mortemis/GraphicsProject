@@ -43,17 +43,23 @@ namespace GraphicsProject
             CanvasWidth = CanvasBox.Width;
             CanvasHeight = CanvasBox.Height;
 
+            cmbMirror.SelectedIndex = 0;
             angleRotate.Value = 45;
 
             _bitmap = new Bitmap(CanvasWidth, CanvasHeight);
             G = Graphics.FromImage(_bitmap);
+
+            cmbColor.SelectedIndex = 0;
 
             _selectedFigures = new List<Figure>();
             _points = new List<PointF>();
             _figures = new ObservableCollection<Figure>();
             _figures.CollectionChanged += (sender, args) =>
             {
-                if (args.NewItems?.Count != 0) _points = new List<PointF>();
+                if (args.NewItems?.Count != 0)
+                {
+                    _points = new List<PointF>();
+                }
             };
         }
 
@@ -61,6 +67,14 @@ namespace GraphicsProject
 
         private void ChoosePrimitive(object sender, EventArgs e)
         {
+            _selectedFigures.Clear();
+            RedrawAll();
+            _isDrawMode = true;
+
+            cmbMirror.Enabled = false;
+            anglesCounter.Enabled = false;
+            angleRotate.Enabled = false;
+
             var button = sender as Button;
             var text = button?.Text;
             switch (text)
@@ -73,15 +87,12 @@ namespace GraphicsProject
                     break;
                 case NamesUtils.Pgn:
                     _currentState = State.Pgn;
-                    break;
+                    anglesCounter.Enabled = true;
+                    return;
                 case NamesUtils.Tgp:
                     _currentState = State.Tgp;
                     break;
             }
-
-            _selectedFigures.Clear();
-            RedrawAll();
-            _isDrawMode = true;
         }
 
         #endregion
@@ -90,6 +101,14 @@ namespace GraphicsProject
 
         private void ChooseOperation(object sender, EventArgs e)
         {
+            _selectedFigures.Clear();
+            RedrawAll();
+            _isDrawMode = false;
+
+            cmbMirror.Enabled = false;
+            anglesCounter.Enabled = false;
+            angleRotate.Enabled = false;
+
             var button = sender as Button;
             var text = button?.Text;
             switch (text)
@@ -99,9 +118,11 @@ namespace GraphicsProject
                     break;
                 case NamesUtils.Rotate:
                     _currentState = State.Rotate;
+                    angleRotate.Enabled = true;
                     break;
                 case NamesUtils.Mirror:
-                    _currentState = State.HorMirror;
+                    _currentState = cmbMirror.SelectedIndex == 0 ? State.HorMirror : State.VertMirror;
+                    cmbMirror.Enabled = true;
                     break;
                 case NamesUtils.TmoUnion:
                     _currentState = State.TmoUnion;
@@ -109,11 +130,10 @@ namespace GraphicsProject
                 case NamesUtils.TmoIntersection:
                     _currentState = State.TmoIntersection;
                     break;
+                case NamesUtils.DeleteItem:
+                    _currentState = State.DeleteItem;
+                    break;
             }
-
-            _selectedFigures.Clear();
-            RedrawAll();
-            _isDrawMode = false;
         }
 
         #endregion
@@ -192,10 +212,9 @@ namespace GraphicsProject
                     else _selectedFigures.Clear();
 
                     RedrawAll();
-                    DrawBorders();
                 }
 
-                // задание центра для поворота,линии для отражения,перемещение - пкм
+                // задание центра для поворота,линии для отражения,перемещение,удаление - пкм
                 if (e.Button == MouseButtons.Right)
                 {
                     switch (_currentState)
@@ -226,10 +245,14 @@ namespace GraphicsProject
                                 _selectedFigures.Clear();
                                 _selectedFigures.Add(tmo);
 
-                                DrawBorders();
                                 RedrawAll();
                             }
 
+                            break;
+                        case State.DeleteItem:
+                            _figures = new ObservableCollection<Figure>(_figures.Except(_selectedFigures));
+                            _selectedFigures.Clear();
+                            RedrawAll();
                             break;
                     }
                 }
@@ -279,12 +302,18 @@ namespace GraphicsProject
             _points.Add(point);
         }
 
-        private void ClearCanvas()
+
+        private void cmbMirror_SelectedIndexChanged(object sender, EventArgs e)
         {
-            G.Clear(CanvasBox.BackColor);
-            _figures.Clear();
-            _points.Clear();
-            CanvasBox.Image = _bitmap;
+            switch (cmbMirror.SelectedIndex)
+            {
+                case 0:
+                    _currentState = State.HorMirror;
+                    break;
+                case 1:
+                    _currentState = State.VertMirror;
+                    break;
+            }
         }
 
         private void RedrawAll()
@@ -322,6 +351,40 @@ namespace GraphicsProject
         {
             _figures = new ObservableCollection<Figure>(_figures.Except(_selectedFigures));
             RedrawAll();
+        }
+
+        #endregion
+
+        #region Pallet events
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (cmbColor.SelectedIndex)
+            {
+                case 0:
+                    Figure.DrawPenStatic = DrawPenUtils.DrawPenBlack;
+                    break;
+                case 1:
+                    Figure.DrawPenStatic = DrawPenUtils.DrawPenPink;
+                    break;
+                case 2:
+                    Figure.DrawPenStatic = DrawPenUtils.DrawPenOrange;
+                    break;
+                case 3:
+                    Figure.DrawPenStatic = DrawPenUtils.DrawPenBlue;
+                    break;
+                case 4:
+                    Figure.DrawPenStatic = DrawPenUtils.DrawPenYellow;
+                    break;
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            G.Clear(CanvasBox.BackColor);
+            _figures.Clear();
+            _points.Clear();
+            CanvasBox.Image = _bitmap;
         }
 
         #endregion

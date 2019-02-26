@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -88,6 +89,9 @@ namespace GraphicsProject.Figures
             return (mY > maxY && mY < minY) && (mX < maxX && mX > minX);
         }
 
-        
+        public override string ToString()
+        {
+            return NamesUtils.Line;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -29,6 +30,11 @@ namespace GraphicsProject.Figures
             }
 
             return pts.ToList();
+        }
+
+        public override string ToString()
+        {
+            return NamesUtils.Pgn;
         }
     }
 }
