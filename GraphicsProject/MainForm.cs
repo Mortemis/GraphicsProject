@@ -120,12 +120,16 @@ namespace GraphicsProject
             {
                 RotateButton.Enabled = true;
                 RemoveButton.Enabled = true;
+                ScaleInButton.Enabled = true;
+                ScaleOutButton.Enabled = true;
 
             }
             else
             {
                 RotateButton.Enabled = false;
                 RemoveButton.Enabled = false;
+                ScaleInButton.Enabled = false;
+                ScaleOutButton.Enabled = false;
             }
             CurrentState = NewState;
             ManageStatus();
@@ -350,6 +354,21 @@ namespace GraphicsProject
         #endregion
 
         private void ScaleNumeric_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ScaleOutButton_Click(object sender, EventArgs e)
+        {
+            if (CurrentState == State.SELECTED)
+            {
+
+                Layers[SelectedLayer].Scale(1/((double)ScaleNumeric.Value));
+                FullUpdateCanvas();
+            }
+        }
+
+        private void ScaleInButton_Click(object sender, EventArgs e)
         {
             if (CurrentState == State.SELECTED)
             {

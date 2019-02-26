@@ -76,7 +76,7 @@ namespace GraphicsProject.Figures
                     t += dt;
                     xPred = xt; yPred = yt;
 
-                    FindSelection(new Point((int)xPred,(int)xPred)); //Finds max&min points and sets selection accordingly to it.
+                    FindSelection(new Point((int)xPred,(int)yPred)); //Finds max&min points and sets selection accordingly to it.
                 }
             }
 

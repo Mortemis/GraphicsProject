@@ -52,12 +52,16 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.ScaleNumeric = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.ScaleInButton = new System.Windows.Forms.Button();
+            this.ScaleOutButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RotateNumerical)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -67,7 +71,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(825, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -124,7 +128,7 @@
             this.CanvasBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CanvasBox.Location = new System.Drawing.Point(102, 27);
             this.CanvasBox.Name = "CanvasBox";
-            this.CanvasBox.Size = new System.Drawing.Size(596, 392);
+            this.CanvasBox.Size = new System.Drawing.Size(621, 439);
             this.CanvasBox.TabIndex = 1;
             this.CanvasBox.TabStop = false;
             this.CanvasBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CanvasBox_MouseDown);
@@ -145,7 +149,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 403);
+            this.label1.Location = new System.Drawing.Point(9, 450);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(78, 26);
             this.label1.TabIndex = 3;
@@ -164,7 +168,7 @@
             // RedrawButton
             // 
             this.RedrawButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RedrawButton.Location = new System.Drawing.Point(12, 367);
+            this.RedrawButton.Location = new System.Drawing.Point(12, 414);
             this.RedrawButton.Name = "RedrawButton";
             this.RedrawButton.Size = new System.Drawing.Size(84, 23);
             this.RedrawButton.TabIndex = 5;
@@ -199,9 +203,9 @@
             this.LayersList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LayersList.FormattingEnabled = true;
             this.LayersList.IntegralHeight = false;
-            this.LayersList.Location = new System.Drawing.Point(704, 27);
+            this.LayersList.Location = new System.Drawing.Point(729, 27);
             this.LayersList.Name = "LayersList";
-            this.LayersList.Size = new System.Drawing.Size(84, 239);
+            this.LayersList.Size = new System.Drawing.Size(86, 218);
             this.LayersList.TabIndex = 8;
             this.LayersList.SelectedIndexChanged += new System.EventHandler(this.LayersList_SelectedIndexChanged);
             this.LayersList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LayersList_MouseDown);
@@ -210,7 +214,7 @@
             // 
             this.RotateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RotateButton.Enabled = false;
-            this.RotateButton.Location = new System.Drawing.Point(1, 1);
+            this.RotateButton.Location = new System.Drawing.Point(4, 5);
             this.RotateButton.Name = "RotateButton";
             this.RotateButton.Size = new System.Drawing.Size(77, 23);
             this.RotateButton.TabIndex = 9;
@@ -222,9 +226,9 @@
             // 
             this.RemoveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RemoveButton.Enabled = false;
-            this.RemoveButton.Location = new System.Drawing.Point(704, 396);
+            this.RemoveButton.Location = new System.Drawing.Point(729, 443);
             this.RemoveButton.Name = "RemoveButton";
-            this.RemoveButton.Size = new System.Drawing.Size(84, 23);
+            this.RemoveButton.Size = new System.Drawing.Size(86, 23);
             this.RemoveButton.TabIndex = 11;
             this.RemoveButton.Text = "Remove";
             this.RemoveButton.UseVisualStyleBackColor = true;
@@ -234,9 +238,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 475);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(825, 22);
             this.statusStrip1.TabIndex = 12;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -270,42 +274,88 @@
             this.panel1.Controls.Add(this.RotateButton);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.RotateNumerical);
-            this.panel1.Location = new System.Drawing.Point(704, 272);
+            this.panel1.Location = new System.Drawing.Point(729, 251);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(83, 75);
+            this.panel1.Size = new System.Drawing.Size(86, 79);
             this.panel1.TabIndex = 15;
             // 
             // ScaleNumeric
             // 
             this.ScaleNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ScaleNumeric.Location = new System.Drawing.Point(704, 367);
-            this.ScaleNumeric.Name = "ScaleNumeric";
-            this.ScaleNumeric.Size = new System.Drawing.Size(81, 20);
-            this.ScaleNumeric.TabIndex = 15;
-            this.ScaleNumeric.Value = new decimal(new int[] {
-            100,
+            this.ScaleNumeric.Increment = new decimal(new int[] {
+            10,
             0,
             0,
             0});
+            this.ScaleNumeric.Location = new System.Drawing.Point(1, 76);
+            this.ScaleNumeric.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.ScaleNumeric.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            -2147483648});
+            this.ScaleNumeric.Name = "ScaleNumeric";
+            this.ScaleNumeric.Size = new System.Drawing.Size(78, 20);
+            this.ScaleNumeric.TabIndex = 15;
             this.ScaleNumeric.ValueChanged += new System.EventHandler(this.ScaleNumeric_ValueChanged);
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(704, 354);
+            this.label3.Location = new System.Drawing.Point(6, 60);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 16;
             this.label3.Text = "Scale:";
             // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.ScaleOutButton);
+            this.panel2.Controls.Add(this.ScaleInButton);
+            this.panel2.Controls.Add(this.ScaleNumeric);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Location = new System.Drawing.Point(729, 336);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(86, 101);
+            this.panel2.TabIndex = 17;
+            // 
+            // ScaleInButton
+            // 
+            this.ScaleInButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ScaleInButton.Enabled = false;
+            this.ScaleInButton.Location = new System.Drawing.Point(3, 1);
+            this.ScaleInButton.Name = "ScaleInButton";
+            this.ScaleInButton.Size = new System.Drawing.Size(77, 23);
+            this.ScaleInButton.TabIndex = 15;
+            this.ScaleInButton.Text = "Scale In";
+            this.ScaleInButton.UseVisualStyleBackColor = true;
+            this.ScaleInButton.Click += new System.EventHandler(this.ScaleInButton_Click);
+            // 
+            // ScaleOutButton
+            // 
+            this.ScaleOutButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ScaleOutButton.Enabled = false;
+            this.ScaleOutButton.Location = new System.Drawing.Point(3, 30);
+            this.ScaleOutButton.Name = "ScaleOutButton";
+            this.ScaleOutButton.Size = new System.Drawing.Size(77, 23);
+            this.ScaleOutButton.TabIndex = 17;
+            this.ScaleOutButton.Text = "Scale Out";
+            this.ScaleOutButton.UseVisualStyleBackColor = true;
+            this.ScaleOutButton.Click += new System.EventHandler(this.ScaleOutButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.ScaleNumeric);
+            this.ClientSize = new System.Drawing.Size(825, 497);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RemoveButton);
@@ -330,6 +380,8 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -361,6 +413,9 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.NumericUpDown ScaleNumeric;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button ScaleOutButton;
+        private System.Windows.Forms.Button ScaleInButton;
     }
 }
 

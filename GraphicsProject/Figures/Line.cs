@@ -16,6 +16,29 @@ namespace GraphicsProject.Figures
             SelectEnd = End;
         }
 
+        private void FindSelection(Point Begin, Point End)
+        {
+            if (Begin.X < End.X)
+            {
+                SelectBegin.X = Begin.X;
+                SelectEnd.X = End.X;
+            }
+            else
+            {
+                SelectBegin.X = End.X;
+                SelectEnd.X = Begin.X;
+            }
+            if (Begin.Y < End.Y)
+            {
+                SelectBegin.Y = Begin.Y;
+                SelectEnd.Y = End.Y;
+            }
+            else
+            {
+                SelectBegin.Y = End.Y;
+                SelectEnd.Y = Begin.Y;
+            }
+        }
         // Static method for other primitives
         public static void Draw(Point Begin, Point End)
         {
@@ -65,6 +88,7 @@ namespace GraphicsProject.Figures
         public override void Draw()
         {
             var Points = ApplyTransformations();
+            FindSelection(Points[0], Points[1]);
             Pen DrPen = MainForm.DrawPen;
             int x1 = Points[0].X; int y1 = Points[0].Y; int x2 = Points[1].X; int y2 = Points[1].Y;
             int x, y, dx, dy, Sx = 0, Sy = 0;

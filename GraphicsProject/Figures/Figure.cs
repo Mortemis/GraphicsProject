@@ -11,6 +11,7 @@ namespace GraphicsProject.Figures
         public bool IsSelected;
         public Point SelectBegin;
         public Point SelectEnd;
+
         public static int SelectGap = 0;
         public List<Point> Points = new List<Point>();
 
@@ -41,30 +42,37 @@ namespace GraphicsProject.Figures
             SelectEnd.Y += DeltaY;
         }
 
-        public void Rotate(Point center, double Angle)
+        public void Rotate(Point Center, double Angle)
         {
             double AngleRadian = Angle * Math.PI / 180D;
             double cosf = Math.Cos(AngleRadian);
             double sinf = Math.Sin(AngleRadian);
 
-            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -center.X, -center.Y, 1 } };
-            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { center.X, center.Y, 1 } };
+            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -Center.X, -Center.Y, 1 } };
+            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
             double[,] R = { { cosf, -sinf, 0 }, { sinf, cosf, 0 }, { 0, 0, 1 } };
 
             C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(R, MObr)));
         }
 
-        public void Scale(int Scale)
+        public void Scale(double Scale)
         {
-            double ScaleD = Scale / 100;
+            Point Center = new Point(SelectBegin.X + (SelectEnd.X - SelectBegin.X)/2, SelectBegin.Y +(SelectEnd.Y - SelectBegin.Y) / 2);
+
+
+
+            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -Center.X, -Center.Y, 1 } };
+            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
             double[,] S =
             {
-                {1+ScaleD/100, 0, 0},
-                {0, 1+ScaleD/100, 0},
-                {0, 0, 1}
+                {Scale, 0, 0},
+                {0, Scale, 0},
+                {0, 0, 1 }
             };
-            C = MathUtils.MultiplyMatrices(C, S);
+            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(S, MObr)));
         }
+
+
         public bool BelongsToFigure(Point Point)
         {
             int mX = Point.X;
@@ -117,7 +125,7 @@ namespace GraphicsProject.Figures
             }
             return NewPoints;
         }
- 
+
 
         public void DrawSelect()
         {
@@ -132,10 +140,28 @@ namespace GraphicsProject.Figures
         {
             //MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
             if (Position.Y < MainForm.bmp.Height && Position.Y >= 0 && Position.X < MainForm.bmp.Width && Position.X >= 0)
-            MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
+                MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
         }
 
 
     }
 
 }
+
+
+
+/*
+ * 
+ * 
+  internal static Matrix CreateScaling(double scaleX, double scaleY, double centerX, double centerY) 
+        { 
+            Matrix matrix = new Matrix();
+  
+            matrix.SetMatrix(scaleX,  0,
+                             0, scaleY,
+                             centerX - scaleX*centerX, centerY - scaleY*centerY,
+                             MatrixTypes.TRANSFORM_IS_SCALING | MatrixTypes.TRANSFORM_IS_TRANSLATION); 
+ 
+            return matrix; 
+        } 
+*/
