@@ -13,19 +13,20 @@ namespace GraphicsProject.Figures
 
         public override void DrawSetOp(List<int> List1, List<int> List2, int y)
         {
-            List<double> Xrl = new List<double>();
-            List<double> Xrr = new List<double>();
-            //массив приращения пороговых функций
+            // Left & right borders lists.
+            List<double> XrLeft = new List<double>();
+            List<double> XrRight = new List<double>();
+            // Incrementation array of threshold functions.
             double[] ThresholdIncr;
-            //рабочий массив итоговых значений
+            // Final values list.
             List<double[]> M = new List<double[]>();
 
 
-            // пересечение
+            // Difference
             ThresholdIncr = new double[1];
             ThresholdIncr[0] = 3;
 
-            //переписываем значения в итоговый массив
+            // Writing values to resulting array.
             int n = List1.Count();
             for (int i = 0; i < n; i += 2)
             {
@@ -44,51 +45,53 @@ namespace GraphicsProject.Figures
                 M.Add(l);
             }
 
-            //сортируем массив
+            // Sorting array.
             Sort(M);
 
             double Q = 0, x, Qn;
-            //если первый элемент массива правая граница сегмента
+
+            // If first element is right border...
             if (M[0][0] >= 0 && M[0][1] < 0)
             {
-                //добавляем левую границу
-                Xrl.Add(0);
+                // Add left border.
+                XrLeft.Add(0);
                 Q = -M[0][1];
             }
 
-            //внос значений в списки левых и правых границ
+            // Adding values to left & right borders lists.
             for (int i = 0; i < M.Count; i++)
             {
                 x = M[i][0];
                 Qn = Q + M[i][1];
                 if (!Belong(Q, ThresholdIncr) && Belong(Qn, ThresholdIncr))
                 {
-                    Xrl.Add(x);
+                    XrLeft.Add(x);
                 }
 
                 if (Belong(Q, ThresholdIncr) && !Belong(Qn, ThresholdIncr))
                 {
-                    Xrr.Add(x);
+                    XrRight.Add(x);
                 }
 
                 Q = Qn;
             }
 
             if (Belong(Q, ThresholdIncr))
-                Xrr.Add(MainForm.bmp.Width);
+                XrRight.Add(MainForm.bmp.Width);
 
-            //рисуем линию
-            for (int i = 0; i < Xrl.Count(); i++)
+            // Drawing horizontal lines.
+            for (int i = 0; i < XrLeft.Count(); i++)
             {
-                Line.Draw(new Point((int)Xrl[i] + 1, y), new Point((int)Xrr[i], y), FigureColor);
+                Line.Draw(new Point((int)XrLeft[i] + 1, y), new Point((int)XrRight[i], y), FigureColor);
+                // Finding selection borders.
                 if (MaxY < y)
                     MaxY = y;
-                if (MaxX < Xrr[Xrr.Count - 1])
-                    MaxX = (int)Xrr[Xrr.Count - 1];
+                if (MaxX < XrRight[XrRight.Count - 1])
+                    MaxX = (int)XrRight[XrRight.Count - 1];
                 if (MinY > y)
                     MinY = y;
-                if (MinX > Xrl[0])
-                    MinX = (int)Xrl[0];
+                if (MinX > XrLeft[0])
+                    MinX = (int)XrLeft[0];
             }
         }
 

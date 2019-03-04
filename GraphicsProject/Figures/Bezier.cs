@@ -7,16 +7,14 @@ namespace GraphicsProject.Figures
 {
     public class Bezier : Figure
     {
-        const int np = 20; // Максимальное количество точек для кривой Безье.
-        //Point[] Lp = new Point[np]; // TODO Remove
-        public bool finished = false; // Кривая дорисована.
+        const int np = 20; // Max points.
+        public bool finished = false; // Bezier finished.
 
         public Bezier()
         {
         }
 
 
-        // TODO remove
         public void Finish()
         {
             finished = true;
@@ -42,7 +40,7 @@ namespace GraphicsProject.Figures
             {
                 var Points = ApplyTransformations();
                 int n = Points.Count - 1;
-                double nFact = Utils.MathUtils.Factorials[n];
+                double nFact = MathUtils.Factorials[n];
 
                 //Шаг
                 double dt = 0.001;
@@ -60,10 +58,10 @@ namespace GraphicsProject.Figures
                 {
                     int i = 0;
                     double xt = 0, yt = 0;
-                    while (i <= n) // Было <=
+                    while (i <= n)
                     {
                         //Интерполяционный полином Бернштейна
-                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Utils.MathUtils.Factorials[i] * Utils.MathUtils.Factorials[n - i]);
+                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (MathUtils.Factorials[i] * MathUtils.Factorials[n - i]);
                         xt = xt + Points[i].X * J;
                         yt = yt + Points[i].Y * J;
                         i++;

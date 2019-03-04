@@ -17,6 +17,7 @@ namespace GraphicsProject.Figures
 
         public Color FigureColor = Color.Black;
 
+        //Transformation matrix. 
         protected double[,] C =
         {
             {1, 0, 0},
@@ -78,22 +79,39 @@ namespace GraphicsProject.Figures
             C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(S, MObr)));
         }
 
+        public virtual void Scale(double Scale, Point Center)
+        {
+            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -Center.X, -Center.Y, 1 } };
+            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
+            //Scale matrix
+            double[,] S =
+            {
+                {Scale, 0, 0},
+                {0, Scale, 0},
+                {0, 0, 1 }
+            };
+            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(S, MObr)));
+        }
+
         public void SetTransformationMatrix(double[,] TransformMatrix)
         {
             C = TransformMatrix;
         }
 
+        /*
+         * Checks if point belongs to figure. 
+         */
         public bool BelongsToFigure(Point Point)
         {
             int mX = Point.X;
             int mY = Point.Y;
             int n = Points.Count - 1, k = 0;
-            PointF Pi, Pk; //принимает дискретные пиксели и рисует в режиме сглаживания
+            PointF Pi, Pk; 
             double x;
-            List<int> Xb = new List<int>(); //буфер сегментов
-            bool check = false;
+            List<int> SegmentBuffer = new List<int>();
+            bool Flag = false;
 
-            Xb.Clear();
+            SegmentBuffer.Clear();
             for (int i = 0; i <= n; i++)
             {
                 if (i < n) k = i + 1;
@@ -103,26 +121,29 @@ namespace GraphicsProject.Figures
                 if ((Pi.Y < mY) & (Pk.Y >= mY) | (Pi.Y >= mY) & (Pk.Y < mY))
                 {
                     x = (mY - Pi.Y) * (Pk.X - Pi.X) / (Pk.Y - Pi.Y) + Pi.X;
-                    Xb.Add((int)Math.Round(x));
+                    SegmentBuffer.Add((int)Math.Round(x));
                 }
             }
 
-            if (Xb.Any())
+            if (SegmentBuffer.Any())
             {
-                Xb.Sort();
-                for (int i = 0; i < Xb.Count; i = i + 2)
+                SegmentBuffer.Sort();
+                for (int i = 0; i < SegmentBuffer.Count; i = i + 2)
                 {
-                    if (mX >= Xb[i] & mX <= Xb[i + 1])
+                    if (mX >= SegmentBuffer[i] & mX <= SegmentBuffer[i + 1])
                     {
-                        check = true;
+                        Flag = true;
                         break;
                     }
                 }
             }
 
-            return check;
+            return Flag;
         }
 
+        /*
+         * Applying transformations stored in C matrix.
+         */
         public List<Point> ApplyTransformations()
         {
             var NewPoints = new List<Point>();
@@ -136,7 +157,9 @@ namespace GraphicsProject.Figures
             return NewPoints;
         }
 
-
+        /*
+         * Draws selection rectangle. 
+         */
         public void DrawSelect()
         {
             Rect Select = new Rect(SelectBegin, SelectEnd);
@@ -148,7 +171,6 @@ namespace GraphicsProject.Figures
 
         public static void PutPoint(Point Position, Color FigureColor)
         {
-            //MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
             if (Position.Y < MainForm.bmp.Height && Position.Y >= 0 && Position.X < MainForm.bmp.Width && Position.X >= 0)
                 MainForm.bmp.SetPixel(Position.X, Position.Y, FigureColor);
         }
@@ -157,21 +179,3 @@ namespace GraphicsProject.Figures
     }
 
 }
-
-
-
-/*
- * 
- * 
-  internal static Matrix CreateScaling(double scaleX, double scaleY, double centerX, double centerY) 
-        { 
-            Matrix matrix = new Matrix();
-  
-            matrix.SetMatrix(scaleX,  0,
-                             0, scaleY,
-                             centerX - scaleX*centerX, centerY - scaleY*centerY,
-                             MatrixTypes.TRANSFORM_IS_SCALING | MatrixTypes.TRANSFORM_IS_TRANSLATION); 
- 
-            return matrix; 
-        } 
-*/

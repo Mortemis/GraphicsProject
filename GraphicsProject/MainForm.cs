@@ -67,20 +67,6 @@ namespace GraphicsProject
         }
 
 
-        private void UpdateCanvas(int index)
-        {
-            /*
-            for (int i = index; i < Layers.Count; i++)
-            {
-                Layers[i].Draw();
-                LayersList.Items.Add(Layers[i].ToString());
-            }
-            CanvasBox.Image = bmp;
-            */
-            FullUpdateCanvas();
-        }
-
-
         private void FullUpdateCanvas()
         {
             g.Clear(Color.White);
@@ -97,7 +83,6 @@ namespace GraphicsProject
         private void ManageStatus()
         {
             StatusLabel.Text = CurrentState.ToString();
-            //TODO switchcase
         }
 
         /*
@@ -150,6 +135,9 @@ namespace GraphicsProject
             }
         }
 
+        /*
+         * Select figure. If CurrentState is set operation, select second figure.
+         */
         private void SelectFigure()
         {
             if (CurrentState != State.INTERSECT && CurrentState != State.DIFFERENCE)
@@ -166,48 +154,54 @@ namespace GraphicsProject
                     FullUpdateCanvas();
                 }
             }
-            else if (CurrentState == State.INTERSECT)
+            else if (Layers[LayersList.SelectedIndex].ToString().Equals("Para") || Layers[LayersList.SelectedIndex].ToString().Equals("Angle"))
             {
-                Intersection Intersection = new Intersection(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
-                int PrevSelection = LayersList.SelectedIndex;
-                int CurrSelection = SelectedLayer;
-                ChangeState(State.WAIT);
-                if (CurrSelection > PrevSelection)
+                if (CurrentState == State.INTERSECT)
                 {
-                    Layers.RemoveAt(CurrSelection);
-                    Layers.RemoveAt(PrevSelection);
+                    Intersection Intersection = new Intersection(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
+                    int PrevSelection = LayersList.SelectedIndex;
+                    int CurrSelection = SelectedLayer;
+                    ChangeState(State.WAIT);
+                    if (CurrSelection > PrevSelection)
+                    {
+                        Layers.RemoveAt(CurrSelection);
+                        Layers.RemoveAt(PrevSelection);
+                    }
+                    else
+                    {
+                        Layers.RemoveAt(PrevSelection);
+                        Layers.RemoveAt(CurrSelection);
+                    }
+                    RefreshList();
+                    AddFigure(Intersection);
+                    FullUpdateCanvas();
                 }
-                else
+                else if (CurrentState == State.DIFFERENCE)
                 {
-                    Layers.RemoveAt(PrevSelection);
-                    Layers.RemoveAt(CurrSelection);
+                    Difference Difference = new Difference(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
+                    int PrevSelection = LayersList.SelectedIndex;
+                    int CurrSelection = SelectedLayer;
+                    ChangeState(State.WAIT);
+                    if (CurrSelection > PrevSelection)
+                    {
+                        Layers.RemoveAt(CurrSelection);
+                        Layers.RemoveAt(PrevSelection);
+                    }
+                    else
+                    {
+                        Layers.RemoveAt(PrevSelection);
+                        Layers.RemoveAt(CurrSelection);
+                    }
+                    RefreshList();
+                    AddFigure(Difference);
+                    FullUpdateCanvas();
                 }
-                RefreshList();
-                AddFigure(Intersection);
-                FullUpdateCanvas();
-            }
-            else if (CurrentState == State.DIFFERENCE)
-            {
-                Difference Difference = new Difference(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
-                int PrevSelection = LayersList.SelectedIndex;
-                int CurrSelection = SelectedLayer;
-                ChangeState(State.WAIT);
-                if (CurrSelection > PrevSelection)
-                {
-                    Layers.RemoveAt(CurrSelection);
-                    Layers.RemoveAt(PrevSelection);
-                }
-                else
-                {
-                    Layers.RemoveAt(PrevSelection);
-                    Layers.RemoveAt(CurrSelection);
-                }
-                RefreshList();
-                AddFigure(Difference);
-                FullUpdateCanvas();
             }
         }
 
+        /*
+         * Remove figure from Layers and LayersList.
+         */
         private void RemoveFigure(int Index)
         {
             try
@@ -269,12 +263,14 @@ namespace GraphicsProject
 
         private void IntersectButton_Click(object sender, EventArgs e)
         {
-            ChangeState(State.INTERSECT);
+            if (Layers[LayersList.SelectedIndex].ToString().Equals("Para") || Layers[LayersList.SelectedIndex].ToString().Equals("Angle"))
+                ChangeState(State.INTERSECT);
         }
 
         private void DifferenceButton_Click(object sender, EventArgs e)
         {
-            ChangeState(State.DIFFERENCE);
+            if (Layers[LayersList.SelectedIndex].ToString().Equals("Para") || Layers[LayersList.SelectedIndex].ToString().Equals("Angle"))
+                ChangeState(State.DIFFERENCE);
         }
         #endregion
 
@@ -283,11 +279,6 @@ namespace GraphicsProject
         {
             switch (CurrentState)
             {
-                case State.WAIT:
-                    {
-                        //TODO Select
-                        break;
-                    }
                 case State.SELECTED:
                     {
                         FirstPoint = e.Location;
@@ -385,6 +376,16 @@ namespace GraphicsProject
             FullUpdateCanvas();
         }
 
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = "Image.jpg";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                bmp.Save(dialog.FileName, ImageFormat.Jpeg);
+            }
+        }
+
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Dispose();
@@ -400,25 +401,6 @@ namespace GraphicsProject
             {
                 ChangeState(State.WAIT);
             }
-
-
-            //DrawRectangle on selected Layer.
-        }
-
-        private void LayersList_MouseDown(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void RotateNumerical_ValueChanged(object sender, EventArgs e)
-        {
-            // TODO remove
-        }
-
-        #endregion
-
-        private void ScaleNumeric_ValueChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void ScaleOutButton_Click(object sender, EventArgs e)
@@ -440,21 +422,7 @@ namespace GraphicsProject
             }
         }
 
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.FileName = "Image.jpg";
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                bmp.Save(dialog.FileName, ImageFormat.Jpeg);
-            }
-        }
 
-        private void HelpToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-        }
-
-        
 
         private void ColorBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -487,6 +455,6 @@ namespace GraphicsProject
             }
         }
 
-       
+        #endregion
     }
 }

@@ -28,8 +28,8 @@ namespace GraphicsProject.Figures
                 }
             }
 
-            //j - индекс точки в списке точек.
-            //k - индекс следующей точки в списке точек.
+            //j - point index.
+            //k - next point index.
             for (int y = yMin; y < yMax + 1; y++)
             {
                 List<int> xList = new List<int>();
@@ -50,7 +50,7 @@ namespace GraphicsProject.Figures
                         Point pt2 = Points[k];
                         Point pt3 = new Point(0, y);
                         Point pt4 = new Point(MainForm.bmp.Width - 1, y);
-                        // Из уравнения прямой.
+                        // From straight line.
                         int x = (y - pt1.Y) * (pt2.X - pt1.X) / (pt2.Y - pt1.Y) + pt1.X;
                         xList.Add(x);
 

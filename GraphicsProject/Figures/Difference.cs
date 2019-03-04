@@ -15,21 +15,20 @@ namespace GraphicsProject.Figures
 
         public override void DrawSetOp(List<int> List1, List<int> List2, int y)
         {
+            // Left & right borders lists.
             List<double> XrLeft = new List<double>();
             List<double> XrRight = new List<double>();
-            //массив приращения пороговых функций
+            // Incrementation array of threshold functions.
             double[] ThresholdIncr;
-            //рабочий массив итоговых значений
+            // Final values list.
             List<double[]> M = new List<double[]>();
-
 
             // Difference
             ThresholdIncr = new double[1];
             ThresholdIncr[0] = 2;
 
             // Writing values to resulting array.
-            int n = List1.Count();
-            for (int i = 0; i < n; i += 2)
+            for (int i = 0; i < List1.Count(); i += 2)
             {
                 double[] k = { List1[i], 2 };
                 M.Add(k);
@@ -37,8 +36,7 @@ namespace GraphicsProject.Figures
                 M.Add(l);
             }
 
-            n = List2.Count();
-            for (int i = 0; i < n; i += 2)
+            for (int i = 0; i < List2.Count(); i += 2)
             {
                 double[] k = { List2[i], 1 };
                 M.Add(k);
@@ -79,10 +77,11 @@ namespace GraphicsProject.Figures
             if (Belong(Q, ThresholdIncr))
                 XrRight.Add(MainForm.bmp.Width);
 
-            // Writing line 
+            // Drawing horizontal lines.
             for (int i = 0; i < XrLeft.Count(); i++)
             {
                 Line.Draw(new Point((int)XrLeft[i] + 1, y), new Point((int)XrRight[i], y), FigureColor);
+                // Finding selection borders.
                 if (MaxY < y)
                     MaxY = y;
                 if (MaxX < XrRight[XrRight.Count - 1])
