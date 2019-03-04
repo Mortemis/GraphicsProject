@@ -40,7 +40,7 @@ namespace GraphicsProject.Figures
             }
         }
         // Static method for other primitives
-        public static void Draw(Point Begin, Point End)
+        public static void Draw(Point Begin, Point End, Color FigureColor)
         {
             Pen DrPen = MainForm.DrawPen;
             int x1 = Begin.X; int y1 = Begin.Y; int x2 = End.X; int y2 = End.Y;
@@ -60,7 +60,7 @@ namespace GraphicsProject.Figures
             {
                 do
                 { //Вывести пиксель с координатами х, у
-                    PutPoint(new Point(x, y));
+                    PutPoint(new Point(x, y), FigureColor);
                     if (x == x2) break;
                     Fx = F + dFx;
                     F = Fx - dFy;
@@ -73,7 +73,7 @@ namespace GraphicsProject.Figures
             {
                 do
                 { //Вывести пиксель с координатами х, у
-                    PutPoint(new Point(x, y));
+                    PutPoint(new Point(x, y), FigureColor);
                     if (y == y2) break;
                     Fy = F + dFy;
                     F = Fy - dFx;
@@ -107,7 +107,7 @@ namespace GraphicsProject.Figures
             {
                 do
                 { //Вывести пиксель с координатами х, у
-                    PutPoint(new Point(x, y));
+                    PutPoint(new Point(x, y), FigureColor);
                     if (x == x2) break;
                     Fx = F + dFx;
                     F = Fx - dFy;
@@ -120,7 +120,7 @@ namespace GraphicsProject.Figures
             {
                 do
                 { //Вывести пиксель с координатами х, у
-                    PutPoint(new Point(x, y));
+                    PutPoint(new Point(x, y), FigureColor);
                     if (y == y2) break;
                     Fy = F + dFy;
                     F = Fy - dFx;

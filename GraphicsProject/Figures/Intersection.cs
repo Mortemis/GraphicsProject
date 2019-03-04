@@ -11,36 +11,36 @@ namespace GraphicsProject.Figures
     {
         public Intersection(Figure figure1, Figure figure2) : base(figure1, figure2) { }
 
-        public override void drawTMO(List<int> listf1, List<int> listf2, int y)
+        public override void DrawSetOp(List<int> List1, List<int> List2, int y)
         {
             List<double> Xrl = new List<double>();
             List<double> Xrr = new List<double>();
             //массив приращения пороговых функций
-            double[] setQ;
+            double[] ThresholdIncr;
             //рабочий массив итоговых значений
             List<double[]> M = new List<double[]>();
 
 
             // пересечение
-            setQ = new double[1];
-            setQ[0] = 3;
+            ThresholdIncr = new double[1];
+            ThresholdIncr[0] = 3;
 
             //переписываем значения в итоговый массив
-            int n = listf1.Count();
+            int n = List1.Count();
             for (int i = 0; i < n; i += 2)
             {
-                double[] k = { listf1[i], 2 };
+                double[] k = { List1[i], 2 };
                 M.Add(k);
-                double[] l = { listf1[i + 1], -2 };
+                double[] l = { List1[i + 1], -2 };
                 M.Add(l);
             }
 
-            n = listf2.Count();
+            n = List2.Count();
             for (int i = 0; i < n; i += 2)
             {
-                double[] k = { listf2[i], 1 };
+                double[] k = { List2[i], 1 };
                 M.Add(k);
-                double[] l = { listf2[i + 1], -1 };
+                double[] l = { List2[i + 1], -1 };
                 M.Add(l);
             }
 
@@ -61,12 +61,12 @@ namespace GraphicsProject.Figures
             {
                 x = M[i][0];
                 Qn = Q + M[i][1];
-                if (!belong(Q, setQ) && belong(Qn, setQ))
+                if (!Belong(Q, ThresholdIncr) && Belong(Qn, ThresholdIncr))
                 {
                     Xrl.Add(x);
                 }
 
-                if (belong(Q, setQ) && !belong(Qn, setQ))
+                if (Belong(Q, ThresholdIncr) && !Belong(Qn, ThresholdIncr))
                 {
                     Xrr.Add(x);
                 }
@@ -74,23 +74,27 @@ namespace GraphicsProject.Figures
                 Q = Qn;
             }
 
-            if (belong(Q, setQ))
+            if (Belong(Q, ThresholdIncr))
                 Xrr.Add(MainForm.bmp.Width);
 
             //рисуем линию
             for (int i = 0; i < Xrl.Count(); i++)
             {
-                //G.DrawLine(MainForm.DrawPen, (int)Xrl[i] + 1, y, (int)Xrr[i], y);
-                Line.Draw(new Point((int)Xrl[i] + 1, y), new Point((int)Xrr[i], y));
-                if (_downY < y)
-                    _downY = y;
-                if (_rightX < Xrr[Xrr.Count - 1])
-                    _rightX = (float)Xrr[Xrr.Count - 1];
-                if (_upY > y)
-                    _upY = y;
-                if (_leftX > Xrl[0])
-                    _leftX = (float)Xrl[0];
+                Line.Draw(new Point((int)Xrl[i] + 1, y), new Point((int)Xrr[i], y), FigureColor);
+                if (MaxY < y)
+                    MaxY = y;
+                if (MaxX < Xrr[Xrr.Count - 1])
+                    MaxX = (int)Xrr[Xrr.Count - 1];
+                if (MinY > y)
+                    MinY = y;
+                if (MinX > Xrl[0])
+                    MinX = (int)Xrl[0];
             }
+        }
+
+        public override string ToString()
+        {
+            return "Intersection";
         }
     }
 }

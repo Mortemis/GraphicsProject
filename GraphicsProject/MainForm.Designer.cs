@@ -37,9 +37,7 @@
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CanvasBox = new System.Windows.Forms.PictureBox();
             this.LineButton = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.BezierButton = new System.Windows.Forms.Button();
-            this.RedrawButton = new System.Windows.Forms.Button();
             this.ParaButton = new System.Windows.Forms.Button();
             this.AngleButton = new System.Windows.Forms.Button();
             this.LayersList = new System.Windows.Forms.ListBox();
@@ -55,6 +53,12 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.ScaleOutButton = new System.Windows.Forms.Button();
             this.ScaleInButton = new System.Windows.Forms.Button();
+            this.IntersectButton = new System.Windows.Forms.Button();
+            this.DifferenceButton = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.ColorBox = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CanvasBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -62,6 +66,8 @@
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).BeginInit();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -95,7 +101,7 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
@@ -117,7 +123,7 @@
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(99, 22);
             this.helpToolStripMenuItem1.Text = "Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.HelpToolStripMenuItem1_Click);
             // 
@@ -139,60 +145,39 @@
             // 
             // LineButton
             // 
-            this.LineButton.Location = new System.Drawing.Point(12, 27);
+            this.LineButton.Location = new System.Drawing.Point(3, 3);
             this.LineButton.Name = "LineButton";
-            this.LineButton.Size = new System.Drawing.Size(84, 23);
+            this.LineButton.Size = new System.Drawing.Size(78, 23);
             this.LineButton.TabIndex = 2;
             this.LineButton.Text = "Line";
             this.LineButton.UseVisualStyleBackColor = true;
             this.LineButton.Click += new System.EventHandler(this.LineButton_Click);
             // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 450);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 26);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Drag and drop \r\nto draw";
-            // 
             // BezierButton
             // 
-            this.BezierButton.Location = new System.Drawing.Point(12, 56);
+            this.BezierButton.Location = new System.Drawing.Point(3, 32);
             this.BezierButton.Name = "BezierButton";
-            this.BezierButton.Size = new System.Drawing.Size(84, 23);
+            this.BezierButton.Size = new System.Drawing.Size(78, 23);
             this.BezierButton.TabIndex = 4;
             this.BezierButton.Text = "Bezier";
             this.BezierButton.UseVisualStyleBackColor = true;
             this.BezierButton.Click += new System.EventHandler(this.BezierButton_Click);
             // 
-            // RedrawButton
-            // 
-            this.RedrawButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RedrawButton.Location = new System.Drawing.Point(12, 414);
-            this.RedrawButton.Name = "RedrawButton";
-            this.RedrawButton.Size = new System.Drawing.Size(84, 23);
-            this.RedrawButton.TabIndex = 5;
-            this.RedrawButton.Text = "DebugRedraw";
-            this.RedrawButton.UseVisualStyleBackColor = true;
-            this.RedrawButton.Click += new System.EventHandler(this.RedrawButton_Click);
-            // 
             // ParaButton
             // 
-            this.ParaButton.Location = new System.Drawing.Point(12, 85);
+            this.ParaButton.Location = new System.Drawing.Point(3, 61);
             this.ParaButton.Name = "ParaButton";
-            this.ParaButton.Size = new System.Drawing.Size(84, 23);
+            this.ParaButton.Size = new System.Drawing.Size(78, 23);
             this.ParaButton.TabIndex = 6;
-            this.ParaButton.Text = "Para";
+            this.ParaButton.Text = "Parallelogram";
             this.ParaButton.UseVisualStyleBackColor = true;
             this.ParaButton.Click += new System.EventHandler(this.ParaButton_Click);
             // 
             // AngleButton
             // 
-            this.AngleButton.Location = new System.Drawing.Point(12, 114);
+            this.AngleButton.Location = new System.Drawing.Point(3, 90);
             this.AngleButton.Name = "AngleButton";
-            this.AngleButton.Size = new System.Drawing.Size(84, 23);
+            this.AngleButton.Size = new System.Drawing.Size(78, 23);
             this.AngleButton.TabIndex = 7;
             this.AngleButton.Text = "Angle";
             this.AngleButton.UseVisualStyleBackColor = true;
@@ -357,22 +342,89 @@
             this.ScaleInButton.UseVisualStyleBackColor = true;
             this.ScaleInButton.Click += new System.EventHandler(this.ScaleInButton_Click);
             // 
+            // IntersectButton
+            // 
+            this.IntersectButton.Location = new System.Drawing.Point(3, 3);
+            this.IntersectButton.Name = "IntersectButton";
+            this.IntersectButton.Size = new System.Drawing.Size(78, 23);
+            this.IntersectButton.TabIndex = 18;
+            this.IntersectButton.Text = "Intersection";
+            this.IntersectButton.UseVisualStyleBackColor = true;
+            this.IntersectButton.Click += new System.EventHandler(this.IntersectButton_Click);
+            // 
+            // DifferenceButton
+            // 
+            this.DifferenceButton.Location = new System.Drawing.Point(3, 32);
+            this.DifferenceButton.Name = "DifferenceButton";
+            this.DifferenceButton.Size = new System.Drawing.Size(78, 23);
+            this.DifferenceButton.TabIndex = 19;
+            this.DifferenceButton.Text = "Difference";
+            this.DifferenceButton.UseVisualStyleBackColor = true;
+            this.DifferenceButton.Click += new System.EventHandler(this.DifferenceButton_Click);
+            // 
+            // panel3
+            // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.LineButton);
+            this.panel3.Controls.Add(this.BezierButton);
+            this.panel3.Controls.Add(this.ParaButton);
+            this.panel3.Controls.Add(this.AngleButton);
+            this.panel3.Location = new System.Drawing.Point(12, 27);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(84, 119);
+            this.panel3.TabIndex = 20;
+            this.panel3.Tag = "";
+            // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.IntersectButton);
+            this.panel4.Controls.Add(this.DifferenceButton);
+            this.panel4.Location = new System.Drawing.Point(12, 152);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(84, 62);
+            this.panel4.TabIndex = 21;
+            // 
+            // ColorBox
+            // 
+            this.ColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ColorBox.FormattingEnabled = true;
+            this.ColorBox.Items.AddRange(new object[] {
+            "Black",
+            "Red",
+            "Green",
+            "Blue"});
+            this.ColorBox.Location = new System.Drawing.Point(12, 443);
+            this.ColorBox.Name = "ColorBox";
+            this.ColorBox.Size = new System.Drawing.Size(82, 21);
+            this.ColorBox.TabIndex = 22;
+            this.ColorBox.Text = "Black";
+            this.ColorBox.SelectedIndexChanged += new System.EventHandler(this.ColorBox_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 427);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(34, 13);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "Color:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(825, 497);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ColorBox);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.RemoveButton);
             this.Controls.Add(this.LayersList);
-            this.Controls.Add(this.AngleButton);
-            this.Controls.Add(this.ParaButton);
-            this.Controls.Add(this.RedrawButton);
-            this.Controls.Add(this.BezierButton);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.LineButton);
             this.Controls.Add(this.CanvasBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -389,6 +441,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.ScaleNumeric)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -405,9 +459,7 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.PictureBox CanvasBox;
         private System.Windows.Forms.Button LineButton;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button BezierButton;
-        private System.Windows.Forms.Button RedrawButton;
         private System.Windows.Forms.Button ParaButton;
         private System.Windows.Forms.Button AngleButton;
         private System.Windows.Forms.ListBox LayersList;
@@ -423,6 +475,12 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button ScaleOutButton;
         private System.Windows.Forms.Button ScaleInButton;
+        private System.Windows.Forms.Button IntersectButton;
+        private System.Windows.Forms.Button DifferenceButton;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.ComboBox ColorBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

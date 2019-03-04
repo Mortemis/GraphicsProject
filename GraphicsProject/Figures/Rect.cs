@@ -30,7 +30,7 @@ namespace GraphicsProject.Figures
         {
             for (int i = 0; i < Points.Count - 1; i++)
             {
-                Line.Draw(Points[i], Points[i + 1]);
+                Line.Draw(Points[i], Points[i + 1], FigureColor);
             }
 
         }

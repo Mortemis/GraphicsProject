@@ -12,10 +12,11 @@ namespace GraphicsProject.Figures
         public Figure Figure1;
         public Figure Figure2;
 
-        protected double _downY;
-        protected double _upY;
-        protected double _rightX;
-        protected double _leftX;
+        // For selection.
+        protected int MaxY;
+        protected int MinY;
+        protected int MaxX;
+        protected int MinX;
 
         public SetOperation(Figure figure1, Figure figure2)
         {
@@ -26,20 +27,22 @@ namespace GraphicsProject.Figures
         public override void Draw()
         {
 
-            _upY = 0;
-            _downY = MainForm.bmp.Height;
+            MinY = 0;
+            MaxY = MainForm.bmp.Height;
 
-            _leftX = MainForm.bmp.Width;
-            _rightX = 0;
+            MinX = MainForm.bmp.Width;
+            MaxX = 0;
 
             List<Point> l1 = Figure1.ApplyTransformations();
             List<Point> l2 = Figure2.ApplyTransformations();
 
-            //списки границ фигур
+            
+
+            // Border list.
             var Xa = new List<int>();
             var Xb = new List<int>();
             int n = l1.Count() - 1;
-            //вычисляем границы фигуры по У
+            // Finding Y borders.
             int Ymin = l1[0].Y;
             int Ymax = Ymin, y;
             for (int i = 0; i < n; i++)
@@ -57,38 +60,39 @@ namespace GraphicsProject.Figures
                 if (y > Ymax) Ymax = y;
             }
 
+            
             if (Ymin < 0)
                 Ymin = 0;
             if (Ymax > MainForm.bmp.Height)
                 Ymax = MainForm.bmp.Height;
 
-            _downY = Ymin;
-            _upY = Ymax;
+            
+            MaxY = Ymin;
+            MinY = Ymax;           
+            
 
-            //для У в границах многоугольника
             for (int Y = Ymin; Y < Ymax; Y++)
             {
-                //чистим списки
                 Xa.Clear();
                 Xb.Clear();
-                //считаем число вершин пересекающихся со строкой
-                Xa = cross(l1, Y);
-                Xb = cross(l2, Y);
+                //Finding vertices crossing lines.
+                Xa = GetCrossPoints(l1, Y);
+                Xb = GetCrossPoints(l2, Y);
                 if (Xa.Count() != 0 || Xb.Count() != 0)
-                    drawTMO(Xa, Xb, Y);
+                    DrawSetOp(Xa, Xb, Y);
             }
-
+            
             Points = new List<Point>();
-            Points.Add(new Point((int)_leftX, (int)_upY));
-            Points.Add(new Point((int)_rightX, (int)_upY));
-            Points.Add(new Point((int)_rightX, (int)_downY));
-            Points.Add(new Point((int)_leftX, (int)_downY));
+            Points.Add(new Point(MinX, MinY));
+            Points.Add(new Point(MaxX, MaxY));
+            FindSelection();
+            if (IsSelected) DrawSelect();
 
         }
 
-        public abstract void drawTMO(List<int> listf1, List<int> listf2, int y);
+        public abstract void DrawSetOp(List<int> List1, List<int> List2, int y);
 
-        private List<int> cross(List<Point> l, int y)
+        private List<int> GetCrossPoints(List<Point> l, int y)
         {
             var X = new List<int>();
             double x;
@@ -110,32 +114,68 @@ namespace GraphicsProject.Figures
 
         protected void Sort(List<double[]> M)
         {
-            double temp, tpQ;
+            double Temp, Temp2;
             for (int i = 0; i < M.Count - 1; i++)
             {
                 for (int j = i + 1; j < M.Count; j++)
                 {
                     if (M[i][0] > M[j][0])
                     {
-                        temp = M[i][0];
-                        tpQ = M[i][1];
+                        Temp = M[i][0];
+                        Temp2 = M[i][1];
                         M[i][0] = M[j][0];
                         M[i][1] = M[j][1];
-                        M[j][0] = temp;
-                        M[j][1] = tpQ;
+                        M[j][0] = Temp;
+                        M[j][1] = Temp2;
                     }
                 }
             }
         }
 
-        protected Boolean belong(double q, double[] sq)
+        protected Boolean Belong(double Double, double[] DoubleArray)
         {
-            for (int i = 0; i < sq.Length; i++)
-                if (sq[i] == q)
+            for (int i = 0; i < DoubleArray.Length; i++)
+                if (DoubleArray[i] == Double)
                     return true;
             return false;
         }
 
+        protected void FindSelection()
+        {
+            /*
+            SelectBegin.X = (Figure1.SelectBegin.X + Figure2.SelectBegin.X) / 2;
+            SelectBegin.Y = (Figure1.SelectBegin.Y + Figure2.SelectBegin.Y) / 2;
+            SelectEnd.X = (Figure1.SelectEnd.X + Figure2.SelectEnd.X) / 2;
+            SelectEnd.Y = (Figure1.SelectEnd.Y + Figure2.SelectEnd.Y) / 2;
+
+            */
+            SelectBegin = Points[0];
+            SelectEnd = Points[1];
+            /*
+            SelectBegin.X = MinX;
+            SelectBegin.Y = MinY;
+            SelectEnd.X = MaxX;
+            SelectEnd.Y = MaxY;*/
+        }
+
+        public override void Move(int DeltaX, int DeltaY)
+        {
+            Figure1.Move(DeltaX, DeltaY);
+            Figure2.Move(DeltaX, DeltaY);
+        }
+
+        public override void Rotate(Point Pt, double Angle)
+        {
+            Figure1.Rotate(Pt, Angle);
+            Figure2.Rotate(Pt, Angle);
+        }
+
+        public override void Scale(double Scale)
+        {
+            Figure1.Scale(Scale);
+            Figure2.Scale(Scale);
+        }
+ 
     }
 }
 

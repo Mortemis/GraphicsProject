@@ -31,7 +31,7 @@ namespace GraphicsProject
     // State of UI
     enum State : int
     {
-        WAIT, SELECTED, DRAW_LINE, DRAW_BEZIER, DRAW_PARA, DRAW_ANGLE, MOVE, ROTATE
+        WAIT, SELECTED, DRAW_LINE, DRAW_BEZIER, DRAW_PARA, DRAW_ANGLE, MOVE, ROTATE, INTERSECT, DIFFERENCE
     }
 
     public partial class MainForm : Form
@@ -44,6 +44,7 @@ namespace GraphicsProject
         public static int width;
         public static int height;
         public static Pen DrawPen = new Pen(Color.Black, 1);
+        public static Color CurrentColor = Color.Black;
         private State CurrentState;
 
         private Point FirstPoint;
@@ -52,7 +53,6 @@ namespace GraphicsProject
         // Идея слоистости - есть лист абстрактного класса Figure, в котором есть метод Draw. 
         // Добавляем в него фигурки, наследующие его, и при любом апдейте просто вызываем метод Draw для всего листа.
         // Может быть, стоит повесить в юи список, чтобы выбирать фигуры можно было и через этот список. (Готово)
-        // TODO Немного лагает, стоит сделать ограничение по количеству фигур или делать только частичную перерисовку и перерисовывать полностью только если это действительно нужно.
         List<Figure> Layers = new List<Figure>();
         int SelectedLayer = -1; //-1 - no select
 
@@ -97,7 +97,6 @@ namespace GraphicsProject
         private void ManageStatus()
         {
             StatusLabel.Text = CurrentState.ToString();
-
             //TODO switchcase
         }
 
@@ -106,16 +105,6 @@ namespace GraphicsProject
          */
         private void ChangeState(State NewState)
         {
-            /*
-            if (CurrentState == State.SELECTED && NewState != State.SELECTED)
-            {
-                //SelectedLayer = -1;
-                RotateButton.Enabled = false;
-                ScaleButton.Enabled = false;
-                RemoveButton.Enabled = false;
-                //LayersList.ClearSelected();
-            }*/
-
 
             if (NewState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
@@ -123,6 +112,8 @@ namespace GraphicsProject
                 RemoveButton.Enabled = true;
                 ScaleInButton.Enabled = true;
                 ScaleOutButton.Enabled = true;
+                IntersectButton.Enabled = true;
+                DifferenceButton.Enabled = true;
 
             }
             else
@@ -131,6 +122,8 @@ namespace GraphicsProject
                 RemoveButton.Enabled = false;
                 ScaleInButton.Enabled = false;
                 ScaleOutButton.Enabled = false;
+                IntersectButton.Enabled = false;
+                DifferenceButton.Enabled = false;
             }
             CurrentState = NewState;
             ManageStatus();
@@ -140,24 +133,90 @@ namespace GraphicsProject
         private void AddFigure(Figure Figure)
         {
             Layers.Add(Figure);
+            Figure.FigureColor = CurrentColor;
             LayersList.Items.Add(Figure.ToString());
             FullUpdateCanvas();
         }
 
+        /*
+         * Updates LayersList with figures from Layers.
+         */
+        private void RefreshList()
+        {
+            LayersList.Items.Clear();
+            foreach (Figure figure in Layers)
+            {
+                LayersList.Items.Add(figure.ToString());
+            }
+        }
+
         private void SelectFigure()
         {
-            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            if (CurrentState != State.INTERSECT && CurrentState != State.DIFFERENCE)
             {
-                Layers[SelectedLayer].IsSelected = false;
+                if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+                {
+                    Layers[SelectedLayer].IsSelected = false;
+                }
+                SelectedLayer = LayersList.SelectedIndex;
+                ChangeState(State.SELECTED);
+                if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+                {
+                    Layers[SelectedLayer].IsSelected = true;
+                    FullUpdateCanvas();
+                }
             }
-            SelectedLayer = LayersList.SelectedIndex;
-            ChangeState(State.SELECTED);
-            if (SelectedLayer < LayersList.Items.Count && SelectedLayer >= 0)
+            else if (CurrentState == State.INTERSECT)
             {
-                Layers[SelectedLayer].IsSelected = true;
+                Intersection Intersection = new Intersection(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
+                int PrevSelection = LayersList.SelectedIndex;
+                int CurrSelection = SelectedLayer;
+                ChangeState(State.WAIT);
+                if (CurrSelection > PrevSelection)
+                {
+                    Layers.RemoveAt(CurrSelection);
+                    Layers.RemoveAt(PrevSelection);
+                }
+                else
+                {
+                    Layers.RemoveAt(PrevSelection);
+                    Layers.RemoveAt(CurrSelection);
+                }
+                RefreshList();
+                AddFigure(Intersection);
                 FullUpdateCanvas();
-                //Layers[SelectedLayer].DrawSelect();
             }
+            else if (CurrentState == State.DIFFERENCE)
+            {
+                Difference Difference = new Difference(Layers[SelectedLayer], Layers[LayersList.SelectedIndex]);
+                int PrevSelection = LayersList.SelectedIndex;
+                int CurrSelection = SelectedLayer;
+                ChangeState(State.WAIT);
+                if (CurrSelection > PrevSelection)
+                {
+                    Layers.RemoveAt(CurrSelection);
+                    Layers.RemoveAt(PrevSelection);
+                }
+                else
+                {
+                    Layers.RemoveAt(PrevSelection);
+                    Layers.RemoveAt(CurrSelection);
+                }
+                RefreshList();
+                AddFigure(Difference);
+                FullUpdateCanvas();
+            }
+        }
+
+        private void RemoveFigure(int Index)
+        {
+            try
+            {
+                LayersList.Items.RemoveAt(Index);
+                Layers.RemoveAt(Index);
+                FullUpdateCanvas();
+            }
+            catch (IndexOutOfRangeException) { }
         }
 
 
@@ -193,14 +252,8 @@ namespace GraphicsProject
         {
             if (CurrentState == State.SELECTED && LayersList.SelectedIndex != -1)
             {
-                try
-                {
-                    Layers.RemoveAt(LayersList.SelectedIndex);
-                    LayersList.Items.RemoveAt(LayersList.SelectedIndex);
-                    FullUpdateCanvas();
-                    ChangeState(State.WAIT);
-                }
-                catch (IndexOutOfRangeException) { }
+                RemoveFigure(LayersList.SelectedIndex);
+                ChangeState(State.WAIT);
             }
             else
             {
@@ -212,6 +265,16 @@ namespace GraphicsProject
         {
             FullUpdateCanvas();
             LayersList.ClearSelected();
+        }
+
+        private void IntersectButton_Click(object sender, EventArgs e)
+        {
+            ChangeState(State.INTERSECT);
+        }
+
+        private void DifferenceButton_Click(object sender, EventArgs e)
+        {
+            ChangeState(State.DIFFERENCE);
         }
         #endregion
 
@@ -265,7 +328,6 @@ namespace GraphicsProject
                         FirstPoint = e.Location;
                         break;
                     }
-
             }
         }
 
@@ -364,7 +426,7 @@ namespace GraphicsProject
             if (CurrentState == State.SELECTED)
             {
 
-                Layers[SelectedLayer].Scale(1/((double)ScaleNumeric.Value));
+                Layers[SelectedLayer].Scale(1 / ((double)ScaleNumeric.Value));
                 FullUpdateCanvas();
             }
         }
@@ -391,5 +453,40 @@ namespace GraphicsProject
         private void HelpToolStripMenuItem1_Click(object sender, EventArgs e)
         {
         }
+
+        
+
+        private void ColorBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (ColorBox.SelectedIndex)
+            {
+                case 0:
+                    {
+                        DrawPen.Color = Color.Black;
+                        CurrentColor = Color.Black;
+                        break;
+                    }
+                case 1:
+                    {
+                        DrawPen.Color = Color.Red;
+                        CurrentColor = Color.Red;
+                        break;
+                    }
+                case 2:
+                    {
+                        DrawPen.Color = Color.Green;
+                        CurrentColor = Color.Green;
+                        break;
+                    }
+                case 3:
+                    {
+                        DrawPen.Color = Color.Blue;
+                        CurrentColor = Color.Blue;
+                        break;
+                    }
+            }
+        }
+
+       
     }
 }

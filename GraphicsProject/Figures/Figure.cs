@@ -11,10 +11,11 @@ namespace GraphicsProject.Figures
         public bool IsSelected;
         public Point SelectBegin;
         public Point SelectEnd;
-
+        
         public static int SelectGap = 5;
         public List<Point> Points = new List<Point>();
 
+        public Color FigureColor = Color.Black;
 
         protected double[,] C =
         {
@@ -24,9 +25,9 @@ namespace GraphicsProject.Figures
         };
 
 
-        public void Move(int DeltaX, int DeltaY)
+        public virtual void Move(int DeltaX, int DeltaY)
         {
-            //матрица движения
+            //Move matrix
             double[,] M =
             {
                 {1, 0, 0},
@@ -42,27 +43,32 @@ namespace GraphicsProject.Figures
             SelectEnd.Y += DeltaY;
         }
 
-        public void Rotate(Point Center, double Angle)
+        public virtual void Rotate(Point Center, double Angle)
         {
             double AngleRadian = Angle * Math.PI / 180D;
             double cosf = Math.Cos(AngleRadian);
             double sinf = Math.Sin(AngleRadian);
 
-            double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -Center.X, -Center.Y, 1 } };
-            double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
-            double[,] R = { { cosf, -sinf, 0 }, { sinf, cosf, 0 }, { 0, 0, 1 } };
-
-            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(R, MObr)));
+            double[,] M = { 
+                { 1, 0, 0 }, 
+                { 0, 1, 0 }, 
+                { -Center.X, -Center.Y, 1 } };
+            double[,] MReversed = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
+            //Rotation matrix
+            double[,] R = { 
+                { cosf, -sinf, 0 }, 
+                { sinf, cosf, 0 }, 
+                { 0, 0, 1 }
+            };
+            C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(R, MReversed)));
         }
 
-        public void Scale(double Scale)
+        public virtual void Scale(double Scale)
         {
             Point Center = new Point(SelectBegin.X + (SelectEnd.X - SelectBegin.X)/2, SelectBegin.Y +(SelectEnd.Y - SelectBegin.Y) / 2);
-
-
-
             double[,] M = { { 1, 0, 0 }, { 0, 1, 0 }, { -Center.X, -Center.Y, 1 } };
             double[,] MObr = { { 1, 0, 0 }, { 0, 1, 0 }, { Center.X, Center.Y, 1 } };
+            //Scale matrix
             double[,] S =
             {
                 {Scale, 0, 0},
@@ -72,6 +78,10 @@ namespace GraphicsProject.Figures
             C = MathUtils.MultiplyMatrices(C, MathUtils.MultiplyMatrices(M, MathUtils.MultiplyMatrices(S, MObr)));
         }
 
+        public void SetTransformationMatrix(double[,] TransformMatrix)
+        {
+            C = TransformMatrix;
+        }
 
         public bool BelongsToFigure(Point Point)
         {
@@ -136,11 +146,11 @@ namespace GraphicsProject.Figures
 
         public abstract void Draw();
 
-        public static void PutPoint(Point Position)
+        public static void PutPoint(Point Position, Color FigureColor)
         {
             //MainForm.g.DrawRectangle(MainForm.DrawPen, Position.X, Position.Y, 1, 1);
             if (Position.Y < MainForm.bmp.Height && Position.Y >= 0 && Position.X < MainForm.bmp.Width && Position.X >= 0)
-                MainForm.bmp.SetPixel(Position.X, Position.Y, Color.Black);
+                MainForm.bmp.SetPixel(Position.X, Position.Y, FigureColor);
         }
 
 

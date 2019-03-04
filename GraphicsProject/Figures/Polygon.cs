@@ -14,7 +14,7 @@ namespace GraphicsProject.Figures
             yMin = Points[0].Y;
             yMax = Points[0].Y;
 
-            //Вычисление минимального и максимального Y.
+            //Finding min&max Y.
             for (int y = 1; y < Points.Count; y++)
             {
                 if (Points[y].Y < yMin)
@@ -50,9 +50,6 @@ namespace GraphicsProject.Figures
                         Point pt2 = Points[k];
                         Point pt3 = new Point(0, y);
                         Point pt4 = new Point(MainForm.bmp.Width - 1, y);
-
-                        // int x = 0;
-                        
                         // Из уравнения прямой.
                         int x = (y - pt1.Y) * (pt2.X - pt1.X) / (pt2.Y - pt1.Y) + pt1.X;
                         xList.Add(x);
@@ -62,8 +59,7 @@ namespace GraphicsProject.Figures
                 xList.Sort();
                 for (int j = 0; j < xList.Count / 2; j += 2)
                 {
-                    Line.Draw(new Point(xList[j], y), new Point(xList[j + 1], y));
-                    //DrawLine(DrawPen, xList[j], y, xList[j + 1], y);  //= new Line...
+                    Line.Draw(new Point(xList[j], y), new Point(xList[j + 1], y), FigureColor);
                 }
             }
         }
@@ -89,7 +85,7 @@ namespace GraphicsProject.Figures
             FindSelection(Points);
             for (int i = 0; i < Points.Count-1; i++)
             {
-                Line.Draw(Points[i], Points[i + 1]);
+                Line.Draw(Points[i], Points[i + 1], FigureColor);
             }
             Fill();
             if (IsSelected) DrawSelect();

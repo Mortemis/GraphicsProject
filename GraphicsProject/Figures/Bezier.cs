@@ -72,7 +72,7 @@ namespace GraphicsProject.Figures
                     Point Begin = new Point((int)xPred, (int)yPred);
                     Point End = new Point((int)xt, (int)yt);
                     
-                    Line.Draw(Begin, End);
+                    Line.Draw(Begin, End, FigureColor);
                     t += dt;
                     xPred = xt; yPred = yt;
 
