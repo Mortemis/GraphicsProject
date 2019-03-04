@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using GraphicsProject.Utils;
 
 namespace GraphicsProject.Figures
 {
@@ -8,56 +9,52 @@ namespace GraphicsProject.Figures
     {
         const int np = 20; // Максимальное количество точек для кривой Безье.
         //Point[] Lp = new Point[np]; // TODO Remove
-        public List<Point> Lp = new List<Point>();
         public bool finished = false; // Кривая дорисована.
 
         public Bezier()
         {
-            Lp = new List<Point>();
-            finished = false;
         }
 
-        private static double[] Factorials = new double[50]; //Массив, который инициализируется факториалами для ускорения работы программы.
 
-        public static void InitFactorials()
-        {
-            for (int i = 0; i < Factorials.Length; i++)
-            {
-                Factorials[i] = Factorial(i);
-            }
-        }
-
-        private static double Factorial(int numb)
-        {
-            double res = 1;
-            for (int i = numb; i > 1; i--) res *= i;
-            return res;
-        }
-
+        // TODO remove
         public void Finish()
         {
             finished = true;
         }
 
-        public void AddPoint(Point point)
+
+        public void AddPoint(Point Point)
         {
-            Lp.Add(point);
+            Points.Add(Point);
+        }
+
+        private void FindSelection(Point Point)
+        {
+            if (SelectBegin.X > Point.X) SelectBegin.X = Point.X;
+            if (SelectBegin.Y > Point.Y) SelectBegin.Y = Point.Y;
+            if (SelectEnd.X < Point.X) SelectEnd.X = Point.X;
+            if (SelectEnd.Y < Point.Y) SelectEnd.Y = Point.Y;
         }
 
         public override void Draw()
         {
             if (finished)
             {
-                int n = Lp.Count - 1;
-                double nFact = Factorials[n];
+                var Points = ApplyTransformations();
+                int n = Points.Count - 1;
+                double nFact = Utils.MathUtils.Factorials[n];
 
                 //Шаг
                 double dt = 0.001;
                 double t = dt;
 
-                double xPred = Lp[0].X;
-                double yPred = Lp[0].Y;
+                double xPred = Points[0].X;
+                double yPred = Points[0].Y;
 
+                SelectBegin.X = (int)xPred;
+                SelectBegin.Y = (int)yPred;
+                SelectEnd.X = (int)xPred;
+                SelectEnd.Y = (int)yPred;
 
                 while (t < 1 + dt / 2)
                 {
@@ -66,20 +63,31 @@ namespace GraphicsProject.Figures
                     while (i <= n) // Было <=
                     {
                         //Интерполяционный полином Бернштейна
-                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Factorials[i] * Factorials[n - i]);
-                        xt = xt + Lp[i].X * J;
-                        yt = yt + Lp[i].Y * J;
+                        double J = Math.Pow(t, i) * Math.Pow(1 - t, n - i) * nFact / (Utils.MathUtils.Factorials[i] * Utils.MathUtils.Factorials[n - i]);
+                        xt = xt + Points[i].X * J;
+                        yt = yt + Points[i].Y * J;
                         i++;
                     }
 
                     Point Begin = new Point((int)xPred, (int)yPred);
                     Point End = new Point((int)xt, (int)yt);
-                    Line.Draw(Begin, End);
+                    
+                    Line.Draw(Begin, End, FigureColor);
                     t += dt;
                     xPred = xt; yPred = yt;
+
+                    FindSelection(new Point((int)xPred,(int)yPred)); //Finds max&min points and sets selection accordingly to it.
                 }
-                nFact = Factorials[n];
             }
+
+            if (IsSelected) DrawSelect();
+
         }
+
+        public override string ToString()
+        {
+            return "Bezier";
+        }
+
     }
 }
